@@ -110,6 +110,11 @@ app.get('/logout', function(req,res){
     res.send();
 });
 
+app.post('/favorite', function(req,res){
+    console.log(req.session['sumoName']);
+    console.log(req.body.sumoFavorite);
+})
+
 app.listen(PORT, () => console.log('Listening on ' + PORT));
 
 function addUser(userInfo){
