@@ -1,0 +1,32 @@
+<html>
+<script src="/js/jquery.js"></script>
+<script>
+    $(function() {
+        $(".header").load("/views/partials/header.html");
+    });
+</script>
+<div class="header"></div>
+<link rel="stylesheet" type="text/css" href="/views/stylesheets/login.css" />
+<div class="login-page">
+    <div class="form">
+        <form id="register-form">
+            <input id="newusername" type="text" placeholder="name" />
+            <input id="newpassword" type="password" placeholder="password" />
+            <input id="newemail" type="text" placeholder="email address" />
+            <button id="create">create</button>
+            <p class="message">Already registered? <a href="#" id="signin">Sign In</a></p>
+        </form>
+        <form id="login-form">
+            <input id="username" type="text" placeholder="username" />
+            <input id="password" type="password" placeholder="password" />
+            <button id="login">login</button>
+            <p class="message">Not registered? <a href="#" id="createAccount">Create an account</a></p>
+        </form>
+    </div>
+</div>
+<div class="footer"></div>
+
+<script src="/js/login.js"></script>
+<script src="/js/materialize.js"></script>
+
+</html>
