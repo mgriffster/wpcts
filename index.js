@@ -5,6 +5,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 5000;
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 var pgp = require('pg-promise')();
 var db = pgp('postgres://ujrqwyhfbscbgs:87516f23130cec74bd5acb014b58c5528b072a5507d705c140bccd254e6f7d8e@ec2-54-197-238-238.compute-1.amazonaws.com:5432/dos8rg55607fp?ssl=true');
 
@@ -56,17 +58,25 @@ app.post('/login', function(req,res){
             "password":req.body.password
         }
         db.any('SELECT * FROM user_info WHERE user_name = $1', login.name).then(function(data){
-            if(data[0].password == login.password)
+            if(data.length == 0)
+            {
+                login.success = false;
+                res.send(login);
+                return;
+            }
+            bcrypt.compare(login.password, data[0].password, function(err, verified) {
+            console.log(verified);
+            if(verified === true)
             {
                 login.success = true;
                 req.session['sumoName'] = login.name;
-                res.send(login);
             }
             else
             {
                 login.success = false;
-                res.send(login);
             }
+            res.send(login);
+            });
         });
         
 });
@@ -111,16 +121,29 @@ app.get('/logout', function(req,res){
 });
 
 app.post('/favorite', function(req,res){
+
     console.log(req.session['sumoName']);
     console.log(req.body.sumoFavorite);
-})
+
+});
 
 app.listen(PORT, () => console.log('Listening on ' + PORT));
 
 function addUser(userInfo){
-    db.one('INSERT INTO user_info(user_name, password, email) VALUES($1, $2, $3) RETURNING user_name', [userInfo.name, userInfo.password, userInfo.email]).then(function(data){
-        console.log('New User Added' + data.user_name);
-    }).catch(error => {
-        console.log(error);   
-    });
+    bcrypt.hash(userInfo.password, saltRounds, function(err, hash) {
+        if(err)
+        {
+            console.log(err);
+            alert('ERROR WHILE CREATING ACCOUNT. CONTACT THE MOTHERSHIP.');
+        }
+        else
+        {
+            db.one('INSERT INTO user_info(user_name, password, email) VALUES($1, $2, $3) RETURNING user_name', [userInfo.name, hash, userInfo.email]).then(function(data){
+                console.log('New User Added' + data.user_name);
+            }).catch(err => {
+                console.log(err);   
+            });
+        }
+      });
+    
 }

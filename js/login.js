@@ -25,7 +25,14 @@ function login(event){
     $.post('/login', { username: name, password : pw}).done(function(data){
         if(data.success !== undefined && !data.success)
         {
-            document.getElementById("password").value = '';
+            var p = document.getElementById("password");
+            p.value = '';
+            p.background = 'red';
+            setTimeout(function(){
+                p.background = '#f2f2f2';
+            }, 400);
+            
+            
         }
         else if(data.success !== undefined && data.success == true)
         {
