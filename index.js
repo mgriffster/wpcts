@@ -30,7 +30,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.get('/', function(req, res){
-    if(req.session !== undefined && req.session.sumoName !== undefined)
+    if(req.session !== undefined && req.session.userName !== undefined)
     {
         res.render('pages/home');
     }
@@ -41,7 +41,7 @@ app.get('/', function(req, res){
 });
 
 app.get('/home', function(req,res){
-    if(req.session !== undefined && req.session.sumoName !== undefined)
+    if(req.session !== undefined && req.session.userName !== undefined)
     {
         res.render('pages/home');
     }
@@ -68,7 +68,7 @@ app.post('/login', function(req,res){
             if(verified === true)
             {
                 login.success = true;
-                req.session['sumoName'] = login.name;
+                req.session['userName'] = login.name;
             }
             else
             {
@@ -96,14 +96,14 @@ app.post('/create', function(req,res){
         {
             addUser(user);
             user.success = true;
-            req.session['sumoName'] = user.name;
+            req.session['userName'] = user.name;
             res.send(user);
         }
     });
 });
 
 app.get('/rikishi', function(req,res){
-    if(req.session !== undefined && req.session.sumoName !== undefined)
+    if(req.session !== undefined && req.session.userName !== undefined)
     {
         res.render('pages/rikishi');
     }
@@ -121,8 +121,10 @@ app.get('/logout', function(req,res){
 
 app.post('/favorite', function(req,res){
 
-    console.log(req.session['sumoName']);
+    console.log(req.session['userName']);
     console.log(req.body.sumoFavorite);
+    res.success = true;
+    res.send();
 
 });
 

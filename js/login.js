@@ -33,8 +33,6 @@ function login(event){
             setTimeout(function(){
                 p.style.color = black;
             }, 1000);
-            
-            
         }
         else if(data.success !== undefined && data.success == true)
         {
