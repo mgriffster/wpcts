@@ -65,7 +65,6 @@ app.post('/login', function(req,res){
                 return;
             }
             bcrypt.compare(login.password, data[0].password, function(err, verified) {
-            console.log(verified);
             if(verified === true)
             {
                 login.success = true;

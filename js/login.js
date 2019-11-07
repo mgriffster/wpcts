@@ -5,6 +5,7 @@ window.onload = function() {
     document.getElementById("signin").onclick = toggleSignin;
     document.getElementById("login").onclick = login;
     this.document.getElementById("create").onclick = create;
+    document.getElementById("password").oninput = hideError;
 };
 
 
@@ -27,10 +28,11 @@ function login(event){
         {
             var p = document.getElementById("password");
             p.value = '';
-            p.background = 'red';
+            p.style.color = 'red';
+            document.getElementById('wrongEntry').style.display = 'block';
             setTimeout(function(){
-                p.background = '#f2f2f2';
-            }, 400);
+                p.style.color = black;
+            }, 1000);
             
             
         }
@@ -59,4 +61,9 @@ function create(event){
         }
     });
     return false;
+}
+
+function hideError()
+{
+    document.getElementById('wrongEntry').style.display = 'none';
 }
