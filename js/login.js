@@ -31,7 +31,7 @@ function login(event){
             p.style.color = 'red';
             document.getElementById('wrongEntry').style.display = 'block';
             setTimeout(function(){
-                p.style.color = black;
+                p.style.color = 'black';
             }, 1000);
         }
         else if(data.success !== undefined && data.success == true)

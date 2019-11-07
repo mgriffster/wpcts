@@ -119,13 +119,77 @@ app.get('/logout', function(req,res){
     res.send();
 });
 
+app.get('/mystable', function(req,res){
+    if(req.session !== undefined && req.session.userName !== undefined)
+    {
+        res.render('pages/mystable');
+    }
+    else{
+        res.redirect('/');
+        res.send();
+    }
+});
+
 app.post('/favorite', function(req,res){
 
-    console.log(req.session['userName']);
-    console.log(req.body.sumoFavorite);
-    res.success = true;
-    res.send();
+    var favorite = {};
+    var currentSumo = [];
+    var newSumo = req.body.sumoFavorite;
+    db.one('SELECT sumo FROM favorited WHERE user_name = $1', [req.session['userName']]).then(function(data)
+    {
+        currentSumo = data;
+        console.log(currentSumo);
+        console.log(currentSumo.sumo);
+        if(currentSumo.sumo.length >= 6)
+        {
+            favorite.success = false;
+            favorite.message = 'You already have 6 sumo wrestlers favorited, please remove them from the My Stable page';
+            res.send(favorite);
+        }
+        else if(currentSumo.sumo.includes(newSumo))
+        {
+            favorite.success = false;
+            favorite.message = 'This sumo wrestler is already in your favorites, to remove them go to your My Stable page.';
+            res.send(favorite);
+        }
+        else
+        {
+            favorite.success = true;
+            favorite.message = newSumo + ' has been added to your favorites.';
+            currentSumo.sumo.push(newSumo);
+            db.one('UPDATE favorited SET sumo = $1 WHERE user_name = $2 RETURNING sumo', [currentSumo.sumo, req.session['userName']]).then(function(data)
+            {
+                
+            }).catch(err => {
+                console.log(err);   
+            });
+            res.send(favorite);
+        }
+        
+    }).catch(err => {
+        console.log(err);   
+    });
+});
 
+app.get('/getmyfavorites', function(req,res){
+    res.rikishiInfo = []
+    await db.one('SELECT sumo FROM favorited WHERE user_name = $1', [req.session['userName']]).then(function(data){
+        for(var x in data.sumo)
+        {
+            db.any('SELECT * FROM rikishi WHERE ring_name = $1', data.sumo[x]).then(function(data)
+            {
+                for(var y in data)
+                {
+                    res.rikishiInfo.push(data[y]);
+                }
+            }).catch(err => {
+                console.log(err);   
+            });
+        }
+    }).catch(err => {
+        console.log(err);   
+    });
+    console.log(res.rikishiInfo);
 });
 
 app.listen(PORT, () => console.log('Listening on ' + PORT));
@@ -140,9 +204,14 @@ function addUser(userInfo){
         else
         {
             db.one('INSERT INTO user_info(user_name, password, email) VALUES($1, $2, $3) RETURNING user_name', [userInfo.name, hash, userInfo.email]).then(function(data){
-                console.log('New User Added' + data.user_name);
+                console.log('New User Added ' + data.user_name);
             }).catch(err => {
                 console.log(err);   
+            });
+            db.one('INSERT INTO favorited(user_name) VALUES($1) RETURNING user_name', [userInfo.name]).then(function(data){
+                
+            }).catch(err => {
+                console.log(err);
             });
         }
       });
