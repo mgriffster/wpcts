@@ -9,8 +9,12 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var pgp = require('pg-promise')();
 var db = pgp('postgres://ujrqwyhfbscbgs:87516f23130cec74bd5acb014b58c5528b072a5507d705c140bccd254e6f7d8e@ec2-54-197-238-238.compute-1.amazonaws.com:5432/dos8rg55607fp?ssl=true');
-
 var jsonParser = bodyParser.json();
+
+
+
+var sanyaku = ['Goeido', 'Takakeisho', 'Mitakeumi', 'Tochinoshin', 'Takayasu', 'Hokutofuji', 'Asanoyama', 'Abi', 'Endo'];
+
 
 var app = express();
 app.use(express.static(__dirname));
@@ -134,12 +138,13 @@ app.post('/favorite', function(req,res){
 
     var favorite = {};
     var currentSumo = [];
+    
     var newSumo = req.body.sumoFavorite;
-    db.one('SELECT sumo FROM favorited WHERE user_name = $1', [req.session['userName']]).then(function(data)
+    db.oneOrNone('SELECT sumo,sanyaku FROM favorited WHERE user_name = $1', [req.session['userName']]).then(function(data)
     {
+        console.log(data);
         currentSumo = data;
         console.log(currentSumo);
-        console.log(currentSumo.sumo);
         if(currentSumo.sumo.length >= 6)
         {
             favorite.success = false;
@@ -152,18 +157,37 @@ app.post('/favorite', function(req,res){
             favorite.message = 'This sumo wrestler is already in your favorites, to remove them go to your My Stable page.';
             res.send(favorite);
         }
+        else if(currentSumo.sanyaku && sanyaku.includes(newSumo))
+        {
+            favorite.success = false;
+            favorite.message = 'You already have one Sanyaku in your stable. You must remove them first.';
+            res.send(favorite);
+        }
         else
         {
             favorite.success = true;
             favorite.message = newSumo + ' has been added to your favorites.';
             currentSumo.sumo.push(newSumo);
-            db.one('UPDATE favorited SET sumo = $1 WHERE user_name = $2 RETURNING sumo', [currentSumo.sumo, req.session['userName']]).then(function(data)
+            if(sanyaku.includes(newSumo))
             {
-                
-            }).catch(err => {
-                console.log(err);   
-            });
-            res.send(favorite);
+                db.one('UPDATE favorited SET sumo = $1, sanyaku = true WHERE user_name = $2 RETURNING sumo', [currentSumo.sumo, req.session['userName']]).then(function(data)
+                {
+                    
+                }).catch(err => {
+                    console.log(err);   
+                });
+                res.send(favorite);
+            }
+            else
+            {
+                db.one('UPDATE favorited SET sumo = $1 WHERE user_name = $2 RETURNING sumo', [currentSumo.sumo, req.session['userName']]).then(function(data)
+                {
+                    
+                }).catch(err => {
+                    console.log(err);   
+                });
+                res.send(favorite);
+            }
         }
         
     }).catch(err => {
@@ -172,27 +196,19 @@ app.post('/favorite', function(req,res){
 });
 
 app.get('/getmyfavorites', function(req,res){
-    res.rikishiInfo = []
-    await db.one('SELECT sumo FROM favorited WHERE user_name = $1', [req.session['userName']]).then(function(data){
-        for(var x in data.sumo)
-        {
-            db.any('SELECT * FROM rikishi WHERE ring_name = $1', data.sumo[x]).then(function(data)
-            {
-                for(var y in data)
-                {
-                    res.rikishiInfo.push(data[y]);
-                }
-            }).catch(err => {
-                console.log(err);   
-            });
-        }
-    }).catch(err => {
-        console.log(err);   
+
+    db.any('select * from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', req.session['userName'])
+    .then(function(data){
+        res.send(data);
+    }).catch(err=>{
+        console.log(err);
     });
-    console.log(res.rikishiInfo);
+    
+
 });
 
 app.listen(PORT, () => console.log('Listening on ' + PORT));
+
 
 function addUser(userInfo){
     bcrypt.hash(userInfo.password, saltRounds, function(err, hash) {
@@ -203,12 +219,12 @@ function addUser(userInfo){
         }
         else
         {
-            db.one('INSERT INTO user_info(user_name, password, email) VALUES($1, $2, $3) RETURNING user_name', [userInfo.name, hash, userInfo.email]).then(function(data){
-                console.log('New User Added ' + data.user_name);
+            db.none('INSERT INTO user_info(user_name, password, email) VALUES($1, $2, $3)', [userInfo.name, hash, userInfo.email]).then(function(data){
+                
             }).catch(err => {
-                console.log(err);   
+                console.log(err); 
             });
-            db.one('INSERT INTO favorited(user_name) VALUES($1) RETURNING user_name', [userInfo.name]).then(function(data){
+            db.none('INSERT INTO favorited(user_name) VALUES($1)', [userInfo.name]).then(function(data){
                 
             }).catch(err => {
                 console.log(err);
