@@ -106,6 +106,28 @@ app.post('/create', function(req,res){
     });
 });
 
+app.post('/remove', function(req,res){
+    var sumo = req.body.sumo;
+    var name = req.session['userName'];
+    var success = true;
+    if(sanyaku.includes(sumo))
+    {
+        db.none('update favorited set sumo = array_remove(sumo, $1), sanyaku = false where user_name = $2', [sumo,name]).catch(err=>{
+            console.log(err);
+            success=false;
+        });
+    }
+    else
+    {
+        db.none('update favorited set sumo = array_remove(sumo, $1) where user_name = $2', [sumo,name]).catch(err=>
+            {
+                console.log(err);
+                success = false;
+            });
+    }
+    res.send(success);
+});
+
 app.get('/rikishi', function(req,res){
     if(req.session !== undefined && req.session.userName !== undefined)
     {
@@ -133,7 +155,17 @@ app.get('/mystable', function(req,res){
         res.send();
     }
 });
-
+app.get('/rules', function(req,res)
+{
+    if(req.session !== undefined && req.session.userName !== undefined)
+    {
+        res.render('pages/rules');
+    }
+    else{
+        res.redirect('/');
+        res.send();
+    }
+});
 app.post('/favorite', function(req,res){
 
     var favorite = {};
@@ -142,9 +174,7 @@ app.post('/favorite', function(req,res){
     var newSumo = req.body.sumoFavorite;
     db.oneOrNone('SELECT sumo,sanyaku FROM favorited WHERE user_name = $1', [req.session['userName']]).then(function(data)
     {
-        console.log(data);
         currentSumo = data;
-        console.log(currentSumo);
         if(currentSumo.sumo.length >= 6)
         {
             favorite.success = false;
@@ -166,7 +196,7 @@ app.post('/favorite', function(req,res){
         else
         {
             favorite.success = true;
-            favorite.message = newSumo + ' has been added to your favorites.';
+            favorite.message = newSumo + ' has been added to your stable.';
             currentSumo.sumo.push(newSumo);
             if(sanyaku.includes(newSumo))
             {

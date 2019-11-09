@@ -2407,6 +2407,7 @@ nav,
 .ch,
 .g,
 .btn-large,
+.btn-small,
 .btn-floating,
 .dropdown-content,
 .n,
@@ -2417,6 +2418,7 @@ nav,
 .z-depth-1-half,
 .g:hover,
 .btn-large:hover,
+.btn-small:hover,
 .btn-floating:hover {
 	box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 7px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -1px rgba(0, 0, 0, 0.2)
 }
@@ -3981,7 +3983,7 @@ nav ul a {
 
 nav ul a.g,
 nav ul a.btn-large,
-nav ul a.btn-large,
+nav ul a.btn-small,
 nav ul a.btn-flat,
 nav ul a.btn-floating {
 	margin-top: -2px;
@@ -3991,7 +3993,7 @@ nav ul a.btn-floating {
 
 nav ul a.btn>.material-icons,
 nav ul a.btn-large>.material-icons,
-nav ul a.btn-large>.material-icons,
+nav ul a.btn-small>.material-icons,
 nav ul a.btn-flat>.material-icons,
 nav ul a.btn-floating>.material-icons {
 	height: inherit;
