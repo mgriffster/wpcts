@@ -8,7 +8,8 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var pgp = require('pg-promise')();
-var db = pgp('postgres://ujrqwyhfbscbgs:87516f23130cec74bd5acb014b58c5528b072a5507d705c140bccd254e6f7d8e@ec2-54-197-238-238.compute-1.amazonaws.com:5432/dos8rg55607fp?ssl=true');
+var db = pgp('postgres://daipfwmuzapzlw:17fff977a27e0a3ca5757456d71b955fe4f25929aed9dd98d39a33a73e10efcf@ec2-54-227-251-33.compute-1.amazonaws.com:5432/d5ngkb7e3s2l2s?ssl=true')
+//var db = pgp('postgres://ujrqwyhfbscbgs:87516f23130cec74bd5acb014b58c5528b072a5507d705c140bccd254e6f7d8e@ec2-54-197-238-238.compute-1.amazonaws.com:5432/dos8rg55607fp?ssl=true');
 var jsonParser = bodyParser.json();
 
 
@@ -105,6 +106,81 @@ app.post('/create', function(req,res){
         }
     });
 });
+
+app.get('/leaderboard', function(req,res)
+{
+    db.any('select points, user_name from user_info order by points desc').then(function(data)
+    {
+        res.send(data);
+    }).catch(err => console.log(err));;
+});
+
+app.post('/getpoints', function(req,res){
+    db.any('select points, ring_name from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', req.body['userName']).then(function(data)
+    {
+        var resp = {}
+        resp.totalpoints = 0;
+        resp.name = req.body['userName'];
+        for(var x in data)
+        {
+            resp.totalpoints += data[x].points;
+        }
+        res.send(resp);
+    });
+
+});
+
+app.get('/updatepoints', function(req,res){
+    db.task(async (t) => {
+        let names = await t.any('SELECT user_name FROM user_info');
+        for(var x in names)
+        {
+            names[x].points = await t.any('select points, ring_name from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', names[x].user_name)
+            .then(function(data){
+                var points = 0;
+                for(var x in data)
+                {
+                    points += data[x].points;
+                }
+                return points;
+            }).catch(err => console.log(err));
+        }
+        return {names};
+    })
+       .then(data => {
+            console.log(data);
+            res.send(data);
+       })
+        .catch(error => {
+            console.log(error)
+        });
+
+});
+
+async function updatePoints(name)
+{
+    try
+    {
+
+    }
+    catch(error)
+    {
+        console.log(error);
+    }
+    db.many('select points, ring_name from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', name).then(function(data)
+    {
+        var totalpoints = 0;
+
+        for(var x in data)
+        {
+           totalpoints += data[x].points;
+        }
+
+        console.log(totalpoints);
+        return totalpoints;
+
+    }).catch(err => console.log(err));
+}
 
 app.post('/remove', function(req,res){
     var sumo = req.body.sumo;
