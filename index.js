@@ -8,7 +8,8 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var pgp = require('pg-promise')();
-var db = pgp('postgres://ujrqwyhfbscbgs:87516f23130cec74bd5acb014b58c5528b072a5507d705c140bccd254e6f7d8e@ec2-54-197-238-238.compute-1.amazonaws.com:5432/dos8rg55607fp?ssl=true');
+var db = pgp('postgres://daipfwmuzapzlw:17fff977a27e0a3ca5757456d71b955fe4f25929aed9dd98d39a33a73e10efcf@ec2-54-227-251-33.compute-1.amazonaws.com:5432/d5ngkb7e3s2l2s?ssl=true')
+//var db = pgp('postgres://ujrqwyhfbscbgs:87516f23130cec74bd5acb014b58c5528b072a5507d705c140bccd254e6f7d8e@ec2-54-197-238-238.compute-1.amazonaws.com:5432/dos8rg55607fp?ssl=true');
 var jsonParser = bodyParser.json();
 
 
@@ -106,26 +107,82 @@ app.post('/create', function(req,res){
     });
 });
 
-app.post('/remove', function(req,res){
-    var sumo = req.body.sumo;
-    var name = req.session['userName'];
-    var success = true;
-    if(sanyaku.includes(sumo))
+app.get('/leaderboard', function(req,res)
+{
+    db.any('select points, user_name from user_info order by points desc').then(function(data)
     {
-        db.none('update favorited set sumo = array_remove(sumo, $1), sanyaku = false where user_name = $2', [sumo,name]).catch(err=>{
-            console.log(err);
-            success=false;
+        res.send(data);
+    }).catch(err => console.log(err));;
+});
+
+app.get('/getpoints', function(req,res){
+    db.any('select points, ring_name, substitute from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', req.session['userName']).then(function(data)
+    {
+        var resp = {}
+        resp.totalpoints = 0;
+        resp.name = req.body['userName'];
+        for(var x in data)
+        {
+            resp.totalpoints += data[x].points;
+        }
+        res.send(resp);
+    });
+
+});
+
+app.get('/leaderboardpoints', function(req,res){
+    db.task(async (t) => {
+        let names = await t.any('SELECT user_name FROM user_info');
+        for(var x in names)
+        {
+            names[x].points = await t.any('select r.points, r.ring_name, f.substitute from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', names[x].user_name)
+            .then(function(data){
+                var points = 0;
+
+                for(var x in data)
+                {
+                    if(data[x].ring_name == data[x].substitute)
+                    {
+                        continue;
+                    }
+                    points += data[x].points;
+                }
+                return points;
+            }).catch(err => console.log(err));
+        }
+        return {names};
+    })
+       .then(data => {
+            res.send(data);
+       })
+        .catch(error => {
+            console.log(error)
         });
-    }
-    else
-    {
-        db.none('update favorited set sumo = array_remove(sumo, $1) where user_name = $2', [sumo,name]).catch(err=>
-            {
-                console.log(err);
-                success = false;
-            });
-    }
-    res.send(success);
+
+});
+
+app.post('/remove', function(req,res){
+    var open = false;
+    res.send(open);
+    // var sumo = req.body.sumo;
+    // var name = req.session['userName'];
+    // var success = true;
+    // if(sanyaku.includes(sumo))
+    // {
+    //     db.none('update favorited set sumo = array_remove(sumo, $1), sanyaku = false where user_name = $2', [sumo,name]).catch(err=>{
+    //         console.log(err);
+    //         success=false;
+    //     });
+    // }
+    // else
+    // {
+    //     db.none('update favorited set sumo = array_remove(sumo, $1) where user_name = $2', [sumo,name]).catch(err=>
+    //         {
+    //             console.log(err);
+    //             success = false;
+    //         });
+    // }
+    // res.send(success);
 });
 
 app.get('/rikishi', function(req,res){
@@ -167,62 +224,65 @@ app.get('/rules', function(req,res)
     }
 });
 app.post('/favorite', function(req,res){
-
-    var favorite = {};
-    var currentSumo = [];
     
-    var newSumo = req.body.sumoFavorite;
-    db.oneOrNone('SELECT sumo,sanyaku FROM favorited WHERE user_name = $1', [req.session['userName']]).then(function(data)
-    {
-        currentSumo = data;
-        if(currentSumo.sumo.length >= 6)
-        {
-            favorite.success = false;
-            favorite.message = 'You already have 6 sumo wrestlers favorited, please remove them from the My Stable page';
-            res.send(favorite);
-        }
-        else if(currentSumo.sumo.includes(newSumo))
-        {
-            favorite.success = false;
-            favorite.message = 'This sumo wrestler is already in your favorites, to remove them go to your My Stable page.';
-            res.send(favorite);
-        }
-        else if(currentSumo.sanyaku && sanyaku.includes(newSumo))
-        {
-            favorite.success = false;
-            favorite.message = 'You already have one Sanyaku in your stable. You must remove them first.';
-            res.send(favorite);
-        }
-        else
-        {
-            favorite.success = true;
-            favorite.message = newSumo + ' has been added to your stable.';
-            currentSumo.sumo.push(newSumo);
-            if(sanyaku.includes(newSumo))
-            {
-                db.one('UPDATE favorited SET sumo = $1, sanyaku = true WHERE user_name = $2 RETURNING sumo', [currentSumo.sumo, req.session['userName']]).then(function(data)
-                {
+    var favorite = {};
+    favorite.message = "Rosters are currently locked for the November Basho.";
+    favorite.success = false;
+    res.send(favorite);
+    // var currentSumo = [];
+    
+    // var newSumo = req.body.sumoFavorite;
+    // db.oneOrNone('SELECT sumo,sanyaku FROM favorited WHERE user_name = $1', [req.session['userName']]).then(function(data)
+    // {
+    //     currentSumo = data;
+    //     if(currentSumo.sumo.length >= 6)
+    //     {
+    //         favorite.success = false;
+    //         favorite.message = 'You already have 6 sumo wrestlers favorited, please remove them from the My Stable page';
+    //         res.send(favorite);
+    //     }
+    //     else if(currentSumo.sumo.includes(newSumo))
+    //     {
+    //         favorite.success = false;
+    //         favorite.message = 'This sumo wrestler is already in your favorites, to remove them go to your My Stable page.';
+    //         res.send(favorite);
+    //     }
+    //     else if(currentSumo.sanyaku && sanyaku.includes(newSumo))
+    //     {
+    //         favorite.success = false;
+    //         favorite.message = 'You already have one Sanyaku in your stable. You must remove them first.';
+    //         res.send(favorite);
+    //     }
+    //     else
+    //     {
+    //         favorite.success = true;
+    //         favorite.message = newSumo + ' has been added to your stable.';
+    //         currentSumo.sumo.push(newSumo);
+    //         if(sanyaku.includes(newSumo))
+    //         {
+    //             db.one('UPDATE favorited SET sumo = $1, sanyaku = true WHERE user_name = $2 RETURNING sumo', [currentSumo.sumo, req.session['userName']]).then(function(data)
+    //             {
                     
-                }).catch(err => {
-                    console.log(err);   
-                });
-                res.send(favorite);
-            }
-            else
-            {
-                db.one('UPDATE favorited SET sumo = $1 WHERE user_name = $2 RETURNING sumo', [currentSumo.sumo, req.session['userName']]).then(function(data)
-                {
+    //             }).catch(err => {
+    //                 console.log(err);   
+    //             });
+    //             res.send(favorite);
+    //         }
+    //         else
+    //         {
+    //             db.one('UPDATE favorited SET sumo = $1 WHERE user_name = $2 RETURNING sumo', [currentSumo.sumo, req.session['userName']]).then(function(data)
+    //             {
                     
-                }).catch(err => {
-                    console.log(err);   
-                });
-                res.send(favorite);
-            }
-        }
+    //             }).catch(err => {
+    //                 console.log(err);   
+    //             });
+    //             res.send(favorite);
+    //         }
+    //     }
         
-    }).catch(err => {
-        console.log(err);   
-    });
+    // }).catch(err => {
+    //     console.log(err);   
+    // });
 });
 
 app.get('/getmyfavorites', function(req,res){
