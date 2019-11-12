@@ -107,26 +107,22 @@ app.post('/create', function(req,res){
     });
 });
 
-app.get('/leaderboard', function(req,res)
-{
-    db.any('select points, user_name from user_info order by points desc').then(function(data)
-    {
-        res.send(data);
-    }).catch(err => console.log(err));;
-});
-
 app.get('/getpoints', function(req,res){
     db.any('select points, ring_name, substitute from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', req.session['userName']).then(function(data)
     {
         var resp = {}
         resp.totalpoints = 0;
-        resp.name = req.body['userName'];
+        resp.name = req.session['userName'];
         for(var x in data)
         {
+            if(data[x].ring_name == data[x].substitute)
+            {
+                        continue;
+            }
             resp.totalpoints += data[x].points;
         }
         res.send(resp);
-    });
+    }).catch(err => console.log(err));
 
 });
 
@@ -150,6 +146,7 @@ app.get('/leaderboardpoints', function(req,res){
                 return points;
             }).catch(err => console.log(err));
         }
+        names.sort((a, b) => parseFloat(b.points) - parseFloat(a.points));
         return {names};
     })
        .then(data => {
@@ -200,6 +197,11 @@ app.get('/logout', function(req,res){
     req.session.destroy();
     res.redirect('/');
     res.send();
+});
+
+app.get('/leaderboard', function(req,res)
+{
+    res.render('pages/leaderboard');
 });
 
 app.get('/mystable', function(req,res){
