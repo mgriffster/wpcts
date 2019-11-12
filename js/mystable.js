@@ -12,6 +12,9 @@ $(document).ready(function() {
             anchor.appendChild(newDiv);
         }
     }).then(function(){
+
+        $.getScript("//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/gallery.min.opt.js?0");
+
         $('.remove_btn').click(function() {
             var sumoRemove = $(this).parent().parent().find('span')[0].innerText;
             var deadDiv = $(this).parent().parent().parent().parent()[0];

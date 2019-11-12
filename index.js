@@ -108,19 +108,26 @@ app.post('/create', function(req,res){
 });
 
 app.get('/getpoints', function(req,res){
-    db.any('select points, ring_name, substitute from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', req.session['userName']).then(function(data)
+    db.any('select points, ring_name, substitute, sub_penalty from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', req.session['userName']).then(function(data)
     {
         var resp = {}
         resp.totalpoints = 0;
         resp.name = req.session['userName'];
         for(var x in data)
-        {
-            if(data[x].ring_name == data[x].substitute)
             {
-                        continue;
+                if(data[x].ring_name == data[x].substitute)
+                {
+                    if(data[x].sub_penalty !== null)
+                    {
+                        resp.totalpoints+=data[x].points;
+                        resp.totalpoints -= data[x].sub_penalty;
+                    }
+                }
+                else
+                {
+                   resp.totalpoints += data[x].points;
+                }
             }
-            resp.totalpoints += data[x].points;
-        }
         res.send(resp);
     }).catch(err => console.log(err));
 
@@ -131,7 +138,7 @@ app.get('/leaderboardpoints', function(req,res){
         let names = await t.any('SELECT user_name FROM user_info');
         for(var x in names)
         {
-            names[x].points = await t.any('select r.points, r.ring_name, f.substitute from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', names[x].user_name)
+            names[x].points = await t.any('select r.points, r.ring_name, f.substitute, sub_penalty from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', names[x].user_name)
             .then(function(data){
                 var points = 0;
 
@@ -139,9 +146,16 @@ app.get('/leaderboardpoints', function(req,res){
                 {
                     if(data[x].ring_name == data[x].substitute)
                     {
-                        continue;
+                        if(data[x].sub_penalty != null)
+                        {
+                            points+=data[x].points;
+                            points -= data[x].sub_penalty;
+                        }
                     }
-                    points += data[x].points;
+                    else
+                    {
+                        points += data[x].points;
+                    }
                 }
                 return points;
             }).catch(err => console.log(err));
