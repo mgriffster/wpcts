@@ -18,10 +18,11 @@ $(document).ready(function() {
         $('.remove_btn').click(function() {
             var sumoRemove = $(this).parent().parent().find('span')[0].innerText;
             var deadDiv = $(this).parent().parent().parent().parent()[0];
-            deadDiv.style.display = 'none';
+        
             $.post('/remove', {sumo:sumoRemove}).done(function(data){
                 if(data)
                 {
+                    deadDiv.style.display = 'none';
                     alert('Successfully removed ' + sumoRemove + ' from your stable. You can add them again through the Rikishi Info page.');
                 }
                 else{
