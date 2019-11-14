@@ -314,8 +314,19 @@ app.get('/getmyfavorites', function(req,res){
     }).catch(err=>{
         console.log(err);
     });
-    
 
+});
+
+app.get('/getchodes', function(req,res){
+    db.any('SELECT * FROM rikishi where weight > height').then(function(data){
+        res.send(data);
+    }).catch(err=>{
+        console.log(err);
+    });
+});
+
+app.get('/chodes', function(req,res){
+    res.render('pages/chodes');
 });
 
 app.listen(PORT, () => console.log('Listening on ' + PORT));
