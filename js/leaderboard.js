@@ -17,11 +17,11 @@ $(document).ready(function(){
             var current = $(this).children()[1].style.display;
             if(current == 'block')
             {
-                current = 'none';
+                $(this).children()[1].style.display = 'none';
             }
             else
             {
-                current = 'block';
+                $(this).children()[1].style.display = 'block';
             }
         });
     });
