@@ -138,29 +138,33 @@ app.get('/leaderboardpoints', function(req,res){
         let names = await t.any('SELECT user_name FROM user_info');
         for(var x in names)
         {
-            names[x].points = await t.any('select r.points, r.ring_name, f.substitute, sub_penalty from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', names[x].user_name)
+            names[x].data = await t.any('select r.points, r.ring_name, f.substitute, sub_penalty from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', names[x].user_name)
             .then(function(data){
                 var points = 0;
-
+                var sumo = [];
                 for(var x in data)
                 {
+                    sumo.push(data[x].ring_name);
                     if(data[x].ring_name == data[x].substitute)
                     {
+                        sumo[x] += ' (sub';
                         if(data[x].sub_penalty != null)
                         {
                             points+=data[x].points;
                             points -= data[x].sub_penalty;
+                            sumo[x] += '-active';
                         }
+                        sumo[x] += ')';
                     }
                     else
                     {
                         points += data[x].points;
                     }
                 }
-                return points;
+                return {points, sumo};
             }).catch(err => console.log(err));
         }
-        names.sort((a, b) => parseFloat(b.points) - parseFloat(a.points));
+        names.sort((a, b) => parseFloat(b.data.points) - parseFloat(a.data.points));
         return {names};
     })
        .then(data => {
@@ -228,6 +232,7 @@ app.get('/mystable', function(req,res){
         res.send();
     }
 });
+
 app.get('/rules', function(req,res)
 {
     if(req.session !== undefined && req.session.userName !== undefined)
