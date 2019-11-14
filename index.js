@@ -318,11 +318,7 @@ app.get('/getmyfavorites', function(req,res){
 });
 
 app.get('/getchodes', function(req,res){
-    db.any('SELECT * FROM rikishi where weight > height').then(function(data){
-        res.send(data);
-    }).catch(err=>{
-        console.log(err);
-    });
+    db.any('SELECT * from rikishi WHERE weight > height').then(data => res.send(data));
 });
 
 app.get('/chodes', function(req,res){
