@@ -179,6 +179,7 @@ app.get('/leaderboardpoints', function(req,res){
 app.post('/remove', function(req,res){
     var open = false;
     res.send(open);
+    //Commented out after roster locks to prevent removing rikishi
     // var sumo = req.body.sumo;
     // var name = req.session['userName'];
     // var success = true;
@@ -198,6 +199,13 @@ app.post('/remove', function(req,res){
     //         });
     // }
     // res.send(success);
+});
+
+app.post('/getbashovideos', function(req,res){
+    var basho = req.body.tournament;
+    db.any('select * from basho_video where basho = $1 order by day desc', basho).then(function(data){
+        res.send(data);
+    }).catch(err => console.log(err));
 });
 
 app.get('/rikishi', function(req,res){
@@ -233,6 +241,10 @@ app.get('/mystable', function(req,res){
     }
 });
 
+app.get('/watch', function(req,res){
+    res.render('pages/watch');
+});
+
 app.get('/rules', function(req,res)
 {
     if(req.session !== undefined && req.session.userName !== undefined)
@@ -250,6 +262,7 @@ app.post('/favorite', function(req,res){
     favorite.message = "Rosters are currently locked for the November Basho.";
     favorite.success = false;
     res.send(favorite);
+    //Commented out after roster locks to prevent adding rikishi
     // var currentSumo = [];
     
     // var newSumo = req.body.sumoFavorite;

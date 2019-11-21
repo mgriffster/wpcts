@@ -56,7 +56,7 @@
 }
 
 .form .message a {
-    color: #rgb(30, 152, 209);
+    color: rgb(30, 152, 209);
     text-decoration: none;
 }
 
@@ -106,12 +106,12 @@
 }
 
 body {
-    background: #143b55;
+    background: #F44336;
     /* fallback for old browsers */
-    background: -webkit-linear-gradient(right, #143b55, rgb(6, 8, 4));
-    background: -moz-linear-gradient(right, #143b55, rgb(6, 8, 4));
-    background: -o-linear-gradient(right, #143b55, rgb(6, 8, 4));
-    background: linear-gradient(to left, #143b55, rgb(6, 8, 4));
+    background: -webkit-linear-gradient(right, #F44336, rgb(6, 8, 4));
+    background: -moz-linear-gradient(right, #F44336, rgb(6, 8, 4));
+    background: -o-linear-gradient(right, #F44336, rgb(6, 8, 4));
+    background: linear-gradient(to left, #F44336, rgb(6, 8, 4));
     font-family: "Roboto", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

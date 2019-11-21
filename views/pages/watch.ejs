@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-  <title>WPCTS - Home</title>
+  <title>WPCTS - Watch</title>
 
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -14,70 +14,31 @@
   <nav class="red lighten-1" role="navigation">
     <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">WPCTS</a>
       <ul class="right hide-on-med-and-down">
-          <li><a href="/leaderboard">Leaderboard</a></li>
+        <li><a href="/home">Home</a></li>
         <li><a href="/mystable">My Stable</a></li>
+        <li><a href="/rules">Fantasy rules</a></li>
+        <li><a href="/rikishi">Rikishi Info</a></li>
         <li><a href="/logout">Logout</a></li>
       </ul>
 
       <ul id="nav-mobile" class="sidenav">
-        <li><a href="#">Navbar Link</a></li>
+        <li><a href="#">Menu</a></li>
       </ul>
       <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
     </div>
   </nav>
-  <div class="section no-pad-bot" id="index-banner">
-    <div class="container">
-      <br><br>
-      <h1 class="header center red-text">Get To Know Sumo</h1>
-      <div class="row center">
-        <h5 class="header col s12 white-text">Sumo Wrestlers are called Rikishi. To know more about the Rikishi click on the button below</h5>
-      </div>
-      <div class="row center">
-        <a href="/rikishi" id="download-button" class="btn-large waves-effect waves-light red">View Rikishi</a>
-        <a href="/rules" id="download-button" class="btn-large waves-effect waves-light red">Fantasy Rules</a>
-      </div>
-      <br><br>
-
+  <div class="videos container">
+    <div class="watch">
+        <iframe class="video-frame" id="main_video" src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="suggestions" id="suggestions_anchor">
+            
     </div>
   </div>
 
 
-  <div class="container white-text">
-    <div class="section">
 
-      <!--   Icon Section   -->
-      <div class="row">
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center red-text"><i class="material-icons">store</i></h2>
-            <h5 class="center">The Stable</h5>
-
-            <p class="light">All professional sumo wrestlers began their careers as youngsters in a communal environment known as a stable. Stables contain all of the people who are involved in the production of sumo wrestling including hairdressers, referees, and retired sumo wrestlers who conduct training sessions. These communes are run by a stable master and his wife - an oyakata and okamisan - with the goal of preserving and teaching the various disciplines and traditions of sumo wrestling.</p>
-          </div>
-        </div>
-
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center red-text"><i class="material-icons">info</i></h2>
-            <h5 class="center">The Rules</h5>
-
-            <p class="light">A sumo wrestling match concludes when one of the wrestlers is either knocked out of the ring or hits the sand with any part of his body other than his feet. There are also illegal moves that disqualify a wrestler such as hair pulling or punching with a closed fist.</p>
-          </div>
-        </div>
-
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center red-text"><i class="material-icons">local_dining</i></h2>
-            <h5 class="center">Big Chonks</h5>
-
-            <p class="light">Sumo wrestlers maintain their infamously large physique with the help of chanko. This is a high-protein, high-starch, high-calorie diet which wrestlers consume twice daily to keep their metabolism low. According to Web-Japan.org they normally eat at around 11:00 a.m. and later at 6:00 p.m. The younger wrestlers serve the chanko which generally consists of stews, sashimi, deep-fried food, and hamburger steaks. Taking long naps after meals is viewed as a training tactic that helps wrestlers achieve a bigger physical presence.</p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-    <br><br>
-  </div>
+  
 
   <footer class="page-footer black">
     <div class="container">
@@ -115,7 +76,7 @@
   <!--  Scripts-->
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="/js/materialize.js"></script>
-  <script src="/js/init.js"></script>
+  <script src="/js/watch.js"></script>
 
   </body>
 </html>
