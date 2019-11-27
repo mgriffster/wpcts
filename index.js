@@ -143,7 +143,7 @@ app.get('/getpoints', function(req,res){
     }).catch(err => console.log(err));
 
 });
-app.get('/wwwwgd', function(req,res){
+app.get('/theprophecy', function(req,res){
     res.render('pages/wide');
 });
 
