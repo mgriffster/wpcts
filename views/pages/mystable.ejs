@@ -340,35 +340,19 @@ for (var attr in meta) {
   </head>
 <script src='/js/jquery.js'></script>
 <script src='/js/mystable.js'></script>
-
+<link href="/views/stylesheets/materialize.css" rel="stylesheet">
+<link href="/views/stylesheets/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <body>
 
     <!-- Navbar and Header -->
-    <nav class="nav-extended">
-      <div class="nav-background" style="background-color:#000">
-        <div class="background"  style="background-image: url('');"></div>
-      </div>
-      <div class="nav-wrapper db">
-        <a href="/home" class="brand-logo">WPCTS</a>
-        <ul class="right hide-on-med-and-down" style="float:right">
-            <li><a href="/home">Home</a></li>
-            <li><a href="/leaderboard">Leaderboard</a></li>
-            <li><a href="/rules">Fantasy rules</a></li>
-          <li><a href="/rikishi">Rikishi Info</a></li>
-          <li><a href="/logout">Logout</a></li>
-          
-        </ul>
-        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-
-        <div class="nav-header de">
+    <%- include header.ejs %>
+        <div class="nav-header de white-text">
           <h1>My Stable</h1>
           <h2>Hatsu Basho starts January 12, 2020</h2>
           <h3 id='points'></h3>
         </div>
-      </div>
       
       <!-- Fixed Masonry Filters -->
-      </nav>
     <!-- Gallery -->
     <div id="portfolio" class="cx gray">
       <div class="db">
@@ -382,9 +366,12 @@ for (var attr in meta) {
 
     <!-- Core Javascript -->
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/materialize/0.98.0/js/materialize.min.js"></script>
     
 
   </body>
 </html>
+
+
+<script src='/js/init.js'></script>
+<script src='/js/materialize.js'></script>

@@ -2129,6 +2129,7 @@
 
 .white-text {
   color: #FFFFFF !important;
+  background-color: black;
 }
 
 .transparent {
@@ -2162,6 +2163,8 @@ html {
  * Remove the margin in all browsers (opinionated).
  */
 body {
+  background-color: black;
+  font-family: "Lato", sans-serif;
   margin: 0;
 }
 
@@ -4309,11 +4312,7 @@ nav .nav-wrapper {
   height: 100%;
 }
 
-@media only screen and (min-width: 993px) {
-  nav a.sidenav-trigger {
-    display: none;
-  }
-}
+
 
 nav .sidenav-trigger {
   float: left;
@@ -4472,7 +4471,7 @@ nav .input-field label.active i {
 .navbar-fixed {
   position: relative;
   height: 56px;
-  z-index: 997;
+  z-index: 5;
 }
 
 .navbar-fixed nav {
@@ -5356,7 +5355,7 @@ button.btn-floating {
   bottom: 23px;
   padding-top: 15px;
   margin-bottom: 0;
-  z-index: 997;
+  z-index: 2;
 }
 
 .fixed-action-btn.active ul {
@@ -7757,7 +7756,7 @@ input[type=range]::-ms-thumb {
   opacity: 0;
   height: 120vh;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 997;
+  z-index: 1;
   display: none;
 }
 

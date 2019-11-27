@@ -11,22 +11,7 @@
   <link href="/views/stylesheets/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 <body>
-  <nav class="red lighten-1" role="navigation">
-    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">WPCTS</a>
-      <ul class="right hide-on-med-and-down">
-        <li><a href="/home">Home</a></li>
-        <li><a href="/mystable">My Stable</a></li>
-        <li><a href="/rules">Fantasy rules</a></li>
-        <li><a href="/rikishi">Rikishi Info</a></li>
-        <li><a href="/logout">Logout</a></li>
-      </ul>
-
-      <ul id="nav-mobile" class="sidenav">
-        <li><a href="#">Menu</a></li>
-      </ul>
-      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-    </div>
-  </nav>
+  <%- include header.ejs %>
   <div class="dropdown white-text">
     <select id="tournaments">
       <option value="hatsu20">Hatsu Basho(January) 2020</option>
@@ -82,6 +67,6 @@
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="/js/materialize.js"></script>
   <script src="/js/watch.js"></script>
-
+  <script src="/js/init.js"></script>
   </body>
 </html>

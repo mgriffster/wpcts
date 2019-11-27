@@ -8,36 +8,18 @@
               
                 <!-- CSS  -->
                 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-                <link href="/views/stylesheets/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
                 <link href="/views/stylesheets/gallery.css" rel="stylesheet">
                 <link href="/views/stylesheets/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 <body>
     <!-- Navbar and Header -->
-    <nav class="nav-extended">
-        <div class="nav-background" style="background-color:#000">
-            <div class="background"  style="background-image: url('');"></div>
-        </div>
-        <div class="nav-wrapper db">
-              <a href="/home" class="brand-logo">WPCTS</a>
-              <ul class="right hide-on-med-and-down" style="float:right">
-                <li><a href="/home">Home</a></li>
-                <li><a href="/mystable">My Stable</a></li>
-                <li><a href="/rules">Fantasy rules</a></li>
-                <li><a href="/rikishi">Rikishi Info</a></li>
-                <li><a href="/logout">Logout</a></li>
-                
-              </ul>
-              <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-      
-              <div class="nav-header de">
-                <h1>Leaderboard</h1>
-                <h2>Results for Kyushu Basho</h2>
-                <h3>Next tournament starts January 12, 2020</h3>
-              </div>
-            </div>
-    </nav>
-
+    <%- include header.ejs %>
+    
+    <div class="nav-header de white-text">
+        <h1>Leaderboard</h1>
+        <h2>Results for Kyushu Basho</h2>
+        <h3>Next tournament starts January 12, 2020</h3>
+      </div>
     <ul class="collection with-header" id="collection">
         
     </ul>
@@ -48,3 +30,4 @@
 <script src='/js/jquery.js'></script>
 <script src='/js/materialize.js'></script>
 <script src='/js/leaderboard.js'></script>
+<script src='/js/init.js'></script>

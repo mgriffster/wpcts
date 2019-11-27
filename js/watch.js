@@ -9,8 +9,6 @@ $(document).ready(function(){
         $("#suggestions_anchor").empty();
         $("#main_video").attr('src', '');
         videoLoad();
-    }).then(function(){
-        $('.swap').click(swapVideos);
     });
 });
 

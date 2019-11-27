@@ -350,15 +350,7 @@ for (var attr in meta) {
         <div class="background"  style="background-image: url('');"></div>
       </div>
       <div class="nav-wrapper db">
-        <a href="/home" class="brand-logo">WPCTS</a>
-        <ul class="right hide-on-med-and-down" style="float:right">
-          <li><a href="/home">Home</a></li>
-          <li><a href="/leaderboard">Leaderboard</a></li>
-          <li><a href="/rules">Fantasy rules</a></li>
-          <li><a href="/mystable">My Stable</a></li>
-          <li><a href="/logout">Logout</a></li>
-        </ul>
-        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+        <%- include header.ejs %>
 
         <div class="nav-header de">
           <h1>RIKISHI</h1>
@@ -3051,6 +3043,7 @@ for (var attr in meta) {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/materialize/0.98.0/js/materialize.min.js"></script>
     <script src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/gallery.min.opt.js?0" crossorigin="anonymous"></script>
+    <script src="/js/init.js"></script>
 
   </body>
 </html>
