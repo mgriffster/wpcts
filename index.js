@@ -143,6 +143,9 @@ app.get('/getpoints', function(req,res){
     }).catch(err => console.log(err));
 
 });
+app.get('/wwwwgd', function(req,res){
+    res.render('pages/wide');
+});
 
 app.get('/leaderboardpoints', function(req,res){
     db.task(async (t) => {
@@ -179,13 +182,29 @@ app.get('/leaderboardpoints', function(req,res){
         return {names};
     })
        .then(data => {
-            res.send(data);
+               res.send(data);
        })
         .catch(error => {
             console.log(error)
         });
 
 });
+
+//Export results code to save for later
+/*
+
+db.task(async (t) => {
+                for(var x in data.names)
+                {
+                    if(data.names[x].data.points > 0)
+                    {
+                        let result = await t.none('INSERT INTO fantasy_results(user_name, finish_position,basho, points, roster) VALUES($1,$2,$3,$4,$5)', [data.names[x].user_name, parseInt(x, 10) +1, 'kyushu19',data.names[x].data.points, data.names[x].data.sumo]);
+                    }
+                }
+                res.send(data);
+               });
+
+*/
 
 app.post('/remove', function(req,res){
     // var open = false;
@@ -196,8 +215,8 @@ app.post('/remove', function(req,res){
     var success = true;
     if(sanyaku.includes(sumo))
     {
-        db.one('update favorited set sumo = array_remove(sumo, $1), sanyaku = false where user_name = $2 RETURNING sumo', [sumo,name]).then(function(data){
-            console.log(data);
+        db.none('update favorited set sumo = array_remove(sumo, $1), sanyaku = false where user_name = $2', [sumo,name]).then(function(data){
+            
         }).catch(err=>{
             console.log(err);
             success=false;
@@ -205,7 +224,7 @@ app.post('/remove', function(req,res){
     }
     else
     {
-        db.one('update favorited set sumo = array_remove(sumo, $1) where user_name = $2 RETURNING sumo', [sumo,name]).then(function(data){
+        db.none('update favorited set sumo = array_remove(sumo, $1) where user_name = $2', [sumo,name]).then(function(data){
             console.log(data);
         }).catch(err=>
             {
