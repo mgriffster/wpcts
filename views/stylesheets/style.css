@@ -17,11 +17,13 @@
   cursor: pointer
 }
 
+
 #tournaments{
   display: flex;
   background-color: white;
-  width: 50%;
+  width: 40%;
   margin: 0 auto;
+  overflow-y: auto;
 }
 
 .videos{

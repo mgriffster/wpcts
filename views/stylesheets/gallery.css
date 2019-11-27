@@ -3885,12 +3885,6 @@ nav .nav-wrapper {
 	height: 100%
 }
 
-@media only screen and (min-width: 993px) {
-	nav a.button-collapse {
-		display: none
-	}
-}
-
 nav .button-collapse {
 	float: left;
 	position: relative;
@@ -7013,7 +7007,7 @@ input[type=range]:focus::-ms-fill-upper {
 	right: 0;
 	height: 120vh;
 	background-color: rgba(0, 0, 0, 0.5);
-	z-index: 1;
+	z-index: 10;
 	will-change: opacity
 }
 

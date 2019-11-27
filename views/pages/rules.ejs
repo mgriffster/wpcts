@@ -11,28 +11,7 @@
   <link href="/views/stylesheets/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 <body>
-  <nav class="red lighten-1" role="navigation">
-    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">WPCTS</a>
-      <ul class="right hide-on-med-and-down">
-        <li><a href="/home">Home</a></li>
-        <li><a href="/leaderboard">Leaderboard</a></li>
-        <li><a href="/mystable">My Stable</a></li>
-        <li><a href="/logout">Logout</a></li>
-      </ul>
-
-      <ul id="nav-mobile" class="sidenav">
-          <li><a href="/home">Home</a></li>
-          <li><a href="/watch">Watch</a></li>
-          <li><a href="/leaderboard">Leaderboard</a></li>
-          <li><a href="/rules">Fantasy rules</a></li>
-          <li><a href="/mystable">My Stable</a></li>
-          <li><a href="/rikishi">Rikishi Info</a></li>
-          <li><a href="/chodes">Chodes</a></li>
-          <li><a href="/logout">Logout</a></li>
-        </ul>
-      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-    </div>
-  </nav>
+    <%- include header.ejs %>
   <div class="section no-pad-bot" id="index-banner">
     <div class="container">
       <br><br>
