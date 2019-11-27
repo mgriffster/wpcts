@@ -16,3 +16,50 @@
 .user-entry{
   cursor: pointer
 }
+
+
+#tournaments{
+  display: flex;
+  background-color: white;
+  width: 40%;
+  margin: 0 auto;
+  overflow-y: auto;
+}
+
+.videos{
+  display: flex;
+  width: 100%;
+  height: 15cm;
+}
+
+.watch{
+  width: 75%;
+}
+
+.suggestions{
+  flex-grow: 1;
+  float: right;
+  width: 25%;
+  overflow-y: auto;
+}
+
+.video-frame{
+  height: 100%;
+  width: -webkit-fill-available;
+  height: -webkit-fill-available;
+  width: -moz-available; /*Firefox compat */
+}
+
+button{
+  width: 100%; 
+  height: 5cm;
+  background-size: center;
+  border-radius: 8px;
+  -webkit-transition-duration: 0.5s;
+  transition-duration: 0.5s;
+}
+
+button:hover{
+  border-radius: 25%;
+  border-color: #bcb58c;
+}

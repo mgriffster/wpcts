@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>WPCTS - Watch</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="/views/stylesheets/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="/views/stylesheets/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+  <%- include header.ejs %>
+  <div class="dropdown white-text">
+    <select id="tournaments">
+      <option value="hatsu20">Hatsu Basho(January) 2020</option>
+      <option selected value="kyushu19">Kyushu Basho(November) 2019</option>
+      <option value="aki19">Aki Basho(September) 2019</option>
+      <option value="legends">Sumo Legends</option>
+    </select>
+  </div>
+  <div class="videos container">
+    <div class="watch">
+        <iframe class="video-frame" id="main_video" src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="suggestions" id="suggestions_anchor">
+            
+    </div>
+  </div>
+  
+
+  <footer class="page-footer black">
+    <div class="container">
+      <div class="row">
+        <div class="col l6 s12">
+          <h5 class="white-text">Sumo Info</h5>
+          <p class="grey-text text-lighten-4">Sumo has a lot of traditions and rituals. To learn more about the life of a Rikishi and the pageantry of Sumo click the links to view videos produced on the subject (in English) from the Japanese government TV station NHK.</p>
+
+
+        </div>
+        <div class="col l3 s12">
+          <h5 class="white-text">Traditions</h5>
+          <ul>
+            <li><a class="white-text" target="_blank" href="https://www3.nhk.or.jp/nhkworld/en/tv/sumo/sumopedia/22/">Sumo Rankings Explained</a></li>
+            <li><a class="white-text" target="_blank" href="https://www3.nhk.or.jp/nhkworld/en/tv/sumo/sumopedia/32/">Forbidden Moves</a></li>
+            <li><a class="white-text" target="_blank" href="https://www3.nhk.or.jp/nhkworld/en/tv/sumo/sumopedia/53/">Sumo Hair Rules</a></li>
+            <li><a class="white-text" target="_blank" href="https://www3.nhk.or.jp/nhkworld/en/tv/sumo/sumopedia/4/">Gyoji - The Referees</a></li>
+            <li><a class="white-text" target="_blank" href="https://www3.nhk.or.jp/nhkworld/en/tv/sumo/sumopedia/67/">Women's Sumo</a></li>
+          </ul>
+        </div>
+        <div class="col l3 s12">
+          <h5 class="white-text">Life of Sumo</h5>
+          <ul>
+            <li><a class="white-text" target="_blank" href="https://www3.nhk.or.jp/nhkworld/en/tv/sumo/sumopedia/31/">Becoming a Sumo Wrestler</a></li>
+            <li><a class="white-text" target="_blank" href="https://www3.nhk.or.jp/nhkworld/en/tv/sumo/sumopedia/24/">Sumo Basic Training</a></li>
+            <li><a class="white-text" target="_blank" href="https://www3.nhk.or.jp/nhkworld/en/tv/sumo/sumopedia/56/">Choosing a Ring Name</a></li>
+            <li><a class="white-text" target="_blank" href="https://www3.nhk.or.jp/nhkworld/en/tv/sumo/sumopedia/5/">Chanko - The Sumo Diet</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="/js/materialize.js"></script>
+  <script src="/js/watch.js"></script>
+  <script src="/js/init.js"></script>
+  </body>
+</html>

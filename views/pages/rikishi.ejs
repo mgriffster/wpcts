@@ -339,8 +339,6 @@ for (var attr in meta) {
 }
 </style><script>window.performance && window.performance.mark && window.performance.mark('shopify.content_for_header.end');</script>
   </head>
-<script src='/js/jquery.js'></script>
-<script src='/js/rikishi.js'></script>
 
   <body>
 
@@ -349,17 +347,16 @@ for (var attr in meta) {
       <div class="nav-background" style="background-color:#000">
         <div class="background"  style="background-image: url('');"></div>
       </div>
-      <div class="nav-wrapper db">
-        <a href="/home" class="brand-logo">WPCTS</a>
-        <ul class="right hide-on-med-and-down" style="float:right">
-          <li><a href="/home">Home</a></li>
-          <li><a href="/leaderboard">Leaderboard</a></li>
-          <li><a href="/rules">Fantasy rules</a></li>
-          <li><a href="/mystable">My Stable</a></li>
-          <li><a href="/logout">Logout</a></li>
-        </ul>
-        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-
+      <div class="nav-wrapper db" style="width:100%">
+            <ul class="right hide-on-med-and-down" style="float:right">
+                <li><a href="/home">Home</a></li>
+                <li><a href="/leaderboard">Leaderboard</a></li>
+                <li><a href="/rules">Fantasy rules</a></li>
+                <li><a href="/mystable">My Stable</a></li>
+                <li><a href="/logout">Logout</a></li>
+              </ul>
+              <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+        
         <div class="nav-header de">
           <h1>RIKISHI</h1>
           <div class="ge">Maegashira: These rikishi have reached the top rank of professional sumo and compete in Makuuchi division tournaments</div>
@@ -380,6 +377,16 @@ for (var attr in meta) {
         </div>
       </div>
     </nav>
+    <ul id="nav-mobile" class="sidenav">
+        <li><a href="/home">Home</a></li>
+        <li><a href="/watch">Watch</a></li>
+        <li><a href="/leaderboard">Leaderboard</a></li>
+        <li><a href="/rules">Fantasy rules</a></li>
+        <li><a href="/mystable">My Stable</a></li>
+        <li><a href="/rikishi">Rikishi Info</a></li>
+        <li><a href="/chodes">Chodes</a></li>
+        <li><a href="/logout">Logout</a></li>
+      </ul>
     <!-- Gallery -->
     <div id="portfolio" class="cx gray">
       <div class="db">
@@ -3051,6 +3058,6 @@ for (var attr in meta) {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/materialize/0.98.0/js/materialize.min.js"></script>
     <script src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/gallery.min.opt.js?0" crossorigin="anonymous"></script>
-
+    <script src='/js/rikishi.js'></script>
   </body>
 </html>

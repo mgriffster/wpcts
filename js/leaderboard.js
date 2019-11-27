@@ -5,7 +5,7 @@ $(document).ready(function(){
         {
             //Add header line of 
             $('#collection').append('<div class="user-entry" id="user-entry'+x+'"><li class="collection-item">' + data.names[x].user_name + ':\t\t' + data.names[x].data.points +'</li>');
-            $('#user-entry'+x).append('<table class="mdTable2" id="sumoTable'+x+'" style="display:none"><tbody>')
+            $('#user-entry'+x).append('<table class="mdTable2 white-text" id="sumoTable'+x+'" style="display:none"><tbody>')
             for(var y in data.names[x].data.sumo)
             {
                 $('#sumoTable'+x).append('<tr><td>'+ data.names[x].data.sumo[y] +'</td></tr>');
