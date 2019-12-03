@@ -147,6 +147,11 @@ app.get('/theprophecy', function(req,res){
     res.render('pages/wide');
 });
 
+app.post('/results', function(req,res){
+    let basho = req.body.tournament;
+    
+});
+
 app.get('/leaderboardpoints', function(req,res){
     db.task(async (t) => {
         let names = await t.any('SELECT user_name FROM user_info');
@@ -190,6 +195,8 @@ app.get('/leaderboardpoints', function(req,res){
 
 });
 
+
+
 //Export results code to save for later
 /*
 
@@ -206,7 +213,10 @@ db.task(async (t) => {
 
 */
 
+
+
 app.post('/remove', function(req,res){
+    // Use to lock after Jan 12
     // var open = false;
     // res.send(open);
     //Commented out after roster locks to prevent removing rikishi
@@ -294,6 +304,7 @@ app.get('/rules', function(req,res)
 app.post('/favorite', function(req,res){
     
     var favorite = {};
+    // Use to lock after Jan 12
     // favorite.message = "Rosters are currently locked for the January Basho.";
     // favorite.success = false;
     // res.send(favorite);
