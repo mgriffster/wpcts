@@ -147,7 +147,18 @@ app.get('/wwwwgd', function(req,res){
     res.render('pages/wide');
 });
 
-app.get('/leaderboardpoints', function(req,res){
+app.post('/results', function(req,res){
+    let basho = req.body.tournament;
+
+    db.any('select user_name,finish_position,points,roster from fantasy_results where basho = $1 order by finish_position;', basho).then(function(data){
+        res.send(data);
+    }).catch(err => console.log(error));
+});
+
+
+//Gets up to date points for all users in current basho
+
+app.get('/currentbashorankings', function(req,res){
     db.task(async (t) => {
         let names = await t.any('SELECT user_name FROM user_info');
         for(var x in names)
@@ -183,6 +194,7 @@ app.get('/leaderboardpoints', function(req,res){
     })
        .then(data => {
                res.send(data);
+               //Export results code goes here to update tournament results
        })
         .catch(error => {
             console.log(error)
@@ -192,13 +204,12 @@ app.get('/leaderboardpoints', function(req,res){
 
 //Export results code to save for later
 /*
-
 db.task(async (t) => {
                 for(var x in data.names)
                 {
                     if(data.names[x].data.points > 0)
                     {
-                        let result = await t.none('INSERT INTO fantasy_results(user_name, finish_position,basho, points, roster) VALUES($1,$2,$3,$4,$5)', [data.names[x].user_name, parseInt(x, 10) +1, 'kyushu19',data.names[x].data.points, data.names[x].data.sumo]);
+                        let result = await t.none('INSERT INTO fantasy_results(user_name, finish_position,basho, points, roster) VALUES($1,$2,$3,$4,$5)', [data.names[x].user_name, parseInt(x, 10) +1, 'hatsu20',data.names[x].data.points, data.names[x].data.sumo]);
                     }
                 }
                 res.send(data);
