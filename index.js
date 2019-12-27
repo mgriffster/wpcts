@@ -9,7 +9,6 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var pgp = require('pg-promise')();
 var db = pgp('postgres://daipfwmuzapzlw:17fff977a27e0a3ca5757456d71b955fe4f25929aed9dd98d39a33a73e10efcf@ec2-54-227-251-33.compute-1.amazonaws.com:5432/d5ngkb7e3s2l2s?ssl=true')
-//var db = pgp('postgres://ujrqwyhfbscbgs:87516f23130cec74bd5acb014b58c5528b072a5507d705c140bccd254e6f7d8e@ec2-54-197-238-238.compute-1.amazonaws.com:5432/dos8rg55607fp?ssl=true');
 var jsonParser = bodyParser.json();
 
 /*
@@ -25,8 +24,9 @@ Make sure points are grabbed from correct basho (remove points for current syste
 
 
 
-var sanyaku = ['Goeido', 'Takakeisho', 'Mitakeumi', 'Tochinoshin', 'Takayasu', 'Hokutofuji', 'Asanoyama', 'Abi', 'Endo'];
+var sanyaku = ['Goeido', 'Takakeisho', 'Takayasu', 'Asanoyama', 'Abi', 'Daiesho'];
 
+var yokozuna = ['Hakuho', 'Kakuryu'];
 
 var app = express();
 app.use(express.static(__dirname));
@@ -143,6 +143,7 @@ app.get('/getpoints', function(req,res){
     }).catch(err => console.log(err));
 
 });
+
 app.get('/wwwwgd', function(req,res){
     res.render('pages/wide');
 });
