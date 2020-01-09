@@ -28,6 +28,8 @@ var sanyaku = ['Goeido', 'Takakeisho', 'Takayasu', 'Asanoyama', 'Abi', 'Daiesho'
 
 var yokozuna = ['Hakuho', 'Kakuryu'];
 
+const current_basho = 'Hatsu20';
+
 var app = express();
 app.use(express.static(__dirname));
 app.use('js', express.static('views/js'));
@@ -119,26 +121,19 @@ app.post('/create', function(req,res){
 });
 
 app.get('/getpoints', function(req,res){
-    db.any('select points, ring_name, substitute, sub_penalty from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', req.session['userName']).then(function(data)
+    db.oneOrNone('select DISTINCT ON (user_name) user_name, SUM(points) as points, substitute from basho_points bp inner join favorited on bp.ring_name = ANY (sumo) where user_name = $1 AND basho = $2 GROUP by user_name', [req.session['userName'], current_basho]).then(function(data)
     {
-        var resp = {}
-        resp.totalpoints = 0;
+        let resp = {}
+        if(data == null)
+        {
+            resp.totalpoints = 0;
+        }
+        else
+        {
+            resp.totalpoints = data.points;
+        }
+        
         resp.name = req.session['userName'];
-        for(var x in data)
-            {
-                if(data[x].ring_name == data[x].substitute)
-                {
-                    if(data[x].sub_penalty !== null)
-                    {
-                        resp.totalpoints+=data[x].points;
-                        resp.totalpoints -= data[x].sub_penalty;
-                    }
-                }
-                else
-                {
-                   resp.totalpoints += data[x].points;
-                }
-            }
         res.send(resp);
     }).catch(err => console.log(err));
 
@@ -224,27 +219,40 @@ app.post('/remove', function(req,res){
     //Commented out after roster locks to prevent removing rikishi
     var sumo = req.body.sumo;
     var name = req.session['userName'];
-    var success = true;
+
     if(sanyaku.includes(sumo))
     {
         db.none('update favorited set sumo = array_remove(sumo, $1), sanyaku = false where user_name = $2', [sumo,name]).then(function(data){
-            
+            res.send(true);
         }).catch(err=>{
             console.log(err);
-            success=false;
+            res.send(false);
         });
     }
     else
     {
         db.none('update favorited set sumo = array_remove(sumo, $1) where user_name = $2', [sumo,name]).then(function(data){
-            console.log(data);
+            res.send(true);
         }).catch(err=>
             {
                 console.log(err);
-                success = false;
+                res.send(false);
             });
     }
-    res.send(success);
+});
+
+app.get('/getrikishi', function(req,res){
+    let data = {};
+    db.any("select * from rikishi where rank like 'Maegashira%' AND active = true order by rank asc").then(function(response){
+        data.maegashira = response;
+        db.any("select * from rikishi where rank like 'Ozeki' OR rank like 'Komusubi' OR rank like 'Sekiwake' AND active = true").then(function(response){
+            data.sanyaku = response;
+            db.any("select * from rikishi where rank like 'Yokozuna' AND active = true").then(function(response){
+                data.yokozuna = response;
+                res.send(data);
+            }).catch(err => res.send(err));
+        }).catch(err => res.send(err));
+    }).catch(err => res.send(err));
 });
 
 app.post('/getbashovideos', function(req,res){
@@ -313,7 +321,13 @@ app.post('/favorite', function(req,res){
     var currentSumo = [];
     
     var newSumo = req.body.sumoFavorite;
-    db.oneOrNone('SELECT sumo,sanyaku FROM favorited WHERE user_name = $1', [req.session['userName']]).then(function(data)
+    if(yokozuna.includes(newSumo)){
+        favorite.success = false;
+        favorite.message = 'You can not add a Yokozuna to your stable because they have swords and that is not fair.';
+        res.send(favorite);
+    }
+    else{
+        db.oneOrNone('SELECT sumo,sanyaku FROM favorited WHERE user_name = $1', [req.session['userName']]).then(function(data)
     {
         currentSumo = data;
         if(currentSumo.sumo.length >= 6)
@@ -364,6 +378,8 @@ app.post('/favorite', function(req,res){
     }).catch(err => {
         console.log(err);   
     });
+    }
+    
 });
 
 app.get('/getmyfavorites', function(req,res){
