@@ -7,7 +7,6 @@ $(document).ready(function(){
 
     $("#tournaments").change(function(){
         $("#suggestions_anchor").empty();
-        $("#main_video").attr('src', '');
         videoLoad();
     });
 });
