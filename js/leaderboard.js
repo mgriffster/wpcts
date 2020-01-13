@@ -11,6 +11,7 @@ $(document).ready(function(){
 function loadRankings()
 {
     $.post('/results', {tournament:$("#tournaments").val()}).done(function(data){
+        document.querySelector('#collection').innerHTML = '';
         for(var x in data)
         {
             //Add header line of 

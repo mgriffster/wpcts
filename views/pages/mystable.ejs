@@ -342,18 +342,47 @@ for (var attr in meta) {
 <script src='/js/mystable.js'></script>
 <link href="/views/stylesheets/materialize.css" rel="stylesheet">
 <link href="/views/stylesheets/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <body>
 
+
+
+  <body>
+    <div id="team" class="white-text" style="display:none">
+      <p id="alertSub" class="flow-text red-text" style="margin-left:5%; margin-right:5%">Select SUBSTITUTE to finalize roster.</p>
+      <form id="teamForm">
+        
+      </form>
+      <button id="submitTeam" class="btn waves-light" type="submit" name="action" style="
+    float: left;
+    width: 40%;
+    margin: 5%;
+">Submit
+        <i class="material-icons right">send</i>
+      </button>
+      <button id="cancelTeam" class="btn waves-light" style="
+    float: right;
+    width: 40%;
+    margin: 5%;
+">Cancel
+        <i class="material-icons right">cancel</i>
+      </button>
+      
+    </div>
+    <div id="teamOverlay" style="display:none">
+    
+    </div>
     <!-- Navbar and Header -->
     <%- include header.ejs %>
         <div class="nav-header de white-text">
-          <h1>My Stable</h1>
-          <h2>Hatsu Basho starts January 12, 2020</h2>
-          <h3 id='points'></h3>
+          <h1>My Favorites</h1>
+          <button id="submitShow" class="btn waves-light">SUBMIT ROSTER
+            <i style="float:right" class="material-icons">people</i></button>
         </div>
       
-      <!-- Fixed Masonry Filters -->
+    
+    
+
     <!-- Gallery -->
+
     <div id="portfolio" class="cx gray">
       <div class="db">
         <div class="b e">
@@ -370,6 +399,8 @@ for (var attr in meta) {
     
 
   </body>
+
+
 </html>
 
 

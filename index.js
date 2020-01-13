@@ -98,6 +98,35 @@ app.post('/login', function(req,res){
         
 });
 
+app.post('/submitroster', function(req,res){
+    var active = req.body.active;
+    var sub = req.body.sub;
+
+    db.oneOrNone('insert into roster(user_name, active, substitute, basho) SELECT $1, $2, $3, $4 WHERE not exists (select * from roster where user_name = $1 AND basho = $4) RETURNING user_name', [req.session['userName'], active, sub, current_basho]).then(function(data){
+        if(typeof data == 'undefined' || data == null)
+        {
+            res.send('Your roster has already been finalized. To see your finalized roster go to the My Roster page and select Hatsu Basho 2020 in the dropdown.');
+        }
+        else
+        {
+            res.send('Successfully finalized your roster. You will now be eligible to win Fantasy Hatsu Basho 2020.');
+        }
+    });
+
+});
+
+app.post('/winners', async function(req,res){
+    var winners = req.body.winners;
+    var day = req.body.day;
+    var basho = req.body.basho;
+    for(var x in winners)
+    {
+        let updated = await db.none('insert into basho_points (ring_name, basho, day, points) VALUES ($1, $2, $3, $4)', [winners[x], basho, day, 1]);
+    }
+
+    res.send('COMPLETE');
+})
+
 app.post('/create', function(req,res){
     var user = {
         "name": req.body.username,
@@ -145,10 +174,13 @@ app.get('/theprophecy', function(req,res){
 
 app.post('/results', function(req,res){
     let basho = req.body.tournament;
-
-    db.any('select user_name,finish_position,points,roster from fantasy_results where basho = $1 order by finish_position;', basho).then(function(data){
-        res.send(data);
-    }).catch(err => console.log(error));
+    if(basho != current_basho)
+    {
+        db.any('select user_name,finish_position,points,roster from fantasy_results where basho = $1 order by finish_position;', basho).then(function(data){
+            res.send(data);
+        }).catch(err => console.log(error));
+    }
+    
 });
 
 //Gets up to date points for all users in current basho
