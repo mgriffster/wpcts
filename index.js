@@ -444,7 +444,7 @@ app.get('/getmyfavorites', function(req,res){
 });
 
 app.get('/getchodes', function(req,res){
-    db.any('select distinct on (r.ring_name) r.*, SUM(bp.points) from rikishi r left join basho_points bp on bp.ring_name = r.ring_name where r.weight >= r.height and r.active = true GROUP BY r.ring_name, r.name').then(data => res.send(data));
+    db.any('select distinct on (r.ring_name) r.*, SUM(bp.points) as points from rikishi r left join basho_points bp on bp.ring_name = r.ring_name where r.weight >= r.height and r.active = true GROUP BY r.ring_name, r.name').then(data => res.send(data));
 });
 
 app.get('/chodes', function(req,res){
