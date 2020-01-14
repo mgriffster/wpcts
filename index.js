@@ -167,6 +167,7 @@ app.get('/getpoints', async function(req,res){
         res.send(totalpoints);
     }
 });
+
 app.get('/roster', function(req,res){
     if(req.session !== undefined && req.session.userName !== undefined)
     {
@@ -285,7 +286,10 @@ app.post('/remove', function(req,res){
             });
     }
 });
-
+app.get('/getroster', async function(req,res){
+    let data = await db.any('select * from rikishi r inner join roster ro on ro.basho = $2 AND (r.ring_name = ANY (ro.active) OR r.ring_name = ro.substitute) where ro.user_name = $1', [req.session['userName'], current_basho]);
+    res.send(data);
+});
 app.get('/getrikishi', function(req,res){
     let data = {};
     db.any("select * from rikishi where rank like 'Maegashira%' AND active = true order by rank asc").then(function(response){
