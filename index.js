@@ -98,6 +98,8 @@ app.post('/login', function(req,res){
 });
 
 app.post('/submitroster', function(req,res){
+    res.send('Rosters are currently locked for the January Basho! If you would still like to submit a roster give $5 and/or a McChicken to McMichael.');
+    return;
     var active = req.body.active;
     var sub = req.body.sub;
 
