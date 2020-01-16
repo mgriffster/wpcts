@@ -182,13 +182,39 @@ app.get('/theprophecy', function(req,res){
     res.render('pages/wide');
 });
 
-app.post('/results', function(req,res){
+app.post('/results', async function(req,res){
     let basho = req.body.tournament;
     if(basho != current_basho)
     {
         db.any('select user_name,finish_position,points,roster from fantasy_results where basho = $1 order by finish_position;', basho).then(function(data){
             res.send(data);
         }).catch(err => console.log(error));
+    }
+    else
+    {
+        let user_rosters = await db.any('select * from roster where basho = $1', current_basho);
+        let data = [];
+        for(var x in user_rosters)
+        {
+            let next_user = await getPoints(user_rosters[x].user_name);
+            data.push({});
+            data[x].points = next_user.totalpoints.points;
+            data[x].user_name = next_user.user_name;
+            data[x].roster = next_user.active;
+            if(next_user.substitute_day != null)
+            {
+                var i = data[x].roster.indexOf(next_user.injured);
+                data[x].roster[i] = data[x].roster[i] + ' (Injured)';
+                data[x].roster.push(next_user.substitute + ' (Active Substitute)')
+            }
+            else
+            {
+                data[x].roster.push(next_user.substitute + ' (Substitute)');
+            }
+
+        }
+        data.sort((a, b) => parseFloat(b.points) - parseFloat(a.points));
+        res.send(data);
     }
     
 });
@@ -333,7 +359,7 @@ app.get('/leaderboard', function(req,res)
     res.render('pages/leaderboard');
 });
 
-app.get('/mystable', function(req,res){
+app.get('/myfavorites', function(req,res){
     if(req.session !== undefined && req.session.userName !== undefined)
     {
         res.render('pages/mystable');
@@ -476,4 +502,32 @@ function addUser(userInfo){
         }
       });
     
+}
+
+async function getPoints(userName)
+{
+    if(!userName)
+    {
+        return 'ERROR';
+    }
+    let result = {};
+    result = await db.oneOrNone('select * from roster where user_name = $1', [userName]).catch(err => console.log(err));
+    
+    if(result.substitute_day != null)
+    {
+        let before_injury = await db.one('select SUM(points) as points from basho_points bp inner join roster r on (bp.ring_name = ANY ($1) AND bp.basho=$2 AND bp.day < $3) WHERE r.user_name = $4', [result.active, current_basho, result.substitute_day, result.user_name]);
+        let subroster = result.active.filter(sumo => sumo != result.injured);
+
+        subroster.push(result.substitute);
+        let after_injury = await db.one('select SUM(points) as points from basho_points bp inner join roster r on (bp.ring_name = ANY ($1) AND bp.basho=$2 AND bp.day >= $3) WHERE r.user_name = $4', [subroster, current_basho, result.substitute_day, result.user_name]);
+        result.totalpoints = before_injury + after_injury;
+
+        return result;
+    }
+    else
+    {
+        result.totalpoints = await db.one('select SUM(points) as points from basho_points bp inner join roster r on (bp.ring_name = ANY ($1) AND bp.basho=$2) WHERE r.user_name = $3', [result.active, current_basho, result.user_name]);
+        
+        return result;
+    }
 }

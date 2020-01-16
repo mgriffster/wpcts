@@ -94,3 +94,19 @@ button:hover{
   font-size: medium;
 
 }
+/*
+https://media3.giphy.com/media/gAbkrVpzVzgwE/giphy.gif sumo attack
+
+https://i.imgur.com/eKnjAKZ.gif geometry
+*/
+#loading {
+  margin-top: 10%;
+  display: none;
+  background: url('https://media3.giphy.com/media/gAbkrVpzVzgwE/giphy.gif') no-repeat center center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 9999999;
+}
