@@ -151,23 +151,9 @@ app.post('/create', function(req,res){
 });
 
 app.get('/getpoints', async function(req,res){
-    let result = await db.oneOrNone('select * from roster where user_name = $1', [req.session['userName']]).catch(err => console.log(err));
-    
-    if(result.substitute_day != null)
-    {
-        let before_injury = await db.one('select SUM(points) as points from basho_points bp inner join roster r on (bp.ring_name = ANY ($1) AND bp.basho=$2 AND bp.day < $3) WHERE r.user_name = $4', [result.active, current_basho, result.substitute_day, result.user_name]);
-        result.active = result.active.filter(sumo => sumo != result.injured);
-        console.log(result.active);
-        result.active.push(result.substitute);
-        let after_injury = await db.one('select SUM(points) as points from basho_points bp inner join roster r on (bp.ring_name = ANY ($1) AND bp.basho=$2 AND bp.day >= $3) WHERE r.user_name = $4', [result.active, current_basho, result.substitute_day, result.user_name]);
-        let totalpoints = before_injury + after_injury;
-        res.send(totalpoints);
-    }
-    else
-    {
-        let totalpoints = await db.one('select SUM(points) as points from basho_points bp inner join roster r on (bp.ring_name = ANY ($1) AND bp.basho=$2) WHERE r.user_name = $3', [result.active, current_basho, result.user_name]);
-        res.send(totalpoints);
-    }
+    let result = await getPoints(req.session['userName']);
+    console.log(result);
+    res.send(result);
 });
 
 app.get('/roster', function(req,res){
