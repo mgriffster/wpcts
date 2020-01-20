@@ -344,7 +344,13 @@ app.get('/logout', function(req,res){
 
 app.get('/leaderboard', function(req,res)
 {
-    res.render('pages/leaderboard');
+    if(req.session !== undefined && req.session.userName !== undefined)
+    {
+        res.render('pages/leaderboard');
+    }
+    else{
+        res.render('pages/login');
+    }
 });
 
 app.get('/myfavorites', function(req,res){
@@ -359,7 +365,13 @@ app.get('/myfavorites', function(req,res){
 });
 
 app.get('/watch', function(req,res){
-    res.render('pages/watch');
+    if(req.session !== undefined && req.session.userName !== undefined)
+    {
+        res.render('pages/watch');
+    }
+    else{
+        res.render('pages/login');
+    }
 });
 
 app.get('/rules', function(req,res)
@@ -462,7 +474,13 @@ app.get('/getchodes', function(req,res){
 });
 
 app.get('/chodes', function(req,res){
-    res.render('pages/chodes');
+    if(req.session !== undefined && req.session.userName !== undefined)
+    {
+        res.render('pages/chodes');
+    }
+    else{
+        res.render('pages/login');
+    }
 });
 
 app.listen(PORT, () => console.log('Listening on ' + PORT));
@@ -517,7 +535,6 @@ async function getPoints(userName)
             after_injury.points = 0;
         }
         result.totalpoints = {points:(parseInt(before_injury.points) + parseInt(after_injury.points))};
-        console.log(result.totalpoints);
         return result;
     }
     else
