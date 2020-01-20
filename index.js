@@ -518,12 +518,20 @@ async function getPoints(userName)
     if(result.substitute_day != null)
     {
         let before_injury = await db.one('select SUM(points) as points from basho_points bp inner join roster r on (bp.ring_name = ANY ($1) AND bp.basho=$2 AND bp.day < $3) WHERE r.user_name = $4', [result.active, current_basho, result.substitute_day, result.user_name]);
+        if(before_injury.points == null)
+        {
+            before_injury.points = 0;
+        }
         let subroster = result.active.filter(sumo => sumo != result.injured);
-
+        
         subroster.push(result.substitute);
         let after_injury = await db.one('select SUM(points) as points from basho_points bp inner join roster r on (bp.ring_name = ANY ($1) AND bp.basho=$2 AND bp.day >= $3) WHERE r.user_name = $4', [subroster, current_basho, result.substitute_day, result.user_name]);
-        result.totalpoints = before_injury + after_injury;
-
+        if(after_injury.points == null)
+        {
+            after_injury.points = 0;
+        }
+        result.totalpoints = {points:(parseInt(before_injury.points) + parseInt(after_injury.points))};
+        console.log(result.totalpoints);
         return result;
     }
     else
