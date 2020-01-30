@@ -110,3 +110,9 @@ https://i.imgur.com/eKnjAKZ.gif geometry
   width: 100%;
   z-index: 9999999;
 }
+
+.prettytable{
+  color: #fff !important;
+  background-color: black;
+  border: 1px white solid;
+}

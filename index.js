@@ -164,8 +164,18 @@ app.get('/roster', function(req,res){
     else{
         res.render('pages/login');
     }
-    
-})
+});
+
+app.get('/videogame', function(req,res){
+    if(req.session !== undefined && req.session.userName !== undefined)
+    {
+        res.render('pages/videogame');
+    }
+    else{
+        res.render('pages/login');
+    }
+});
+
 app.get('/theprophecy', function(req,res){
     res.render('pages/wide');
 });

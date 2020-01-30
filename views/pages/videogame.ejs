@@ -1,0 +1,237 @@
+<html class="" lang="en"><head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WPCTS - Play</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600,700,800" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://www.retrogames.cc/css/jquery.toast.min.css?v=201904161">
+    <script src="https://www.retrogames.cc/bower_components/jquery/dist/jquery.js?v=201904161"></script>
+    <link rel="dns-prefetch" href="//www.emulatorjs.com">
+    <meta property="og:locale" content="en_US">
+    <link href="/views/stylesheets/materialize.css" rel="stylesheet">
+    <meta name="theme-color" content="#e96969">
+
+    <head>
+        <!-- CSS  -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <link href="/views/stylesheets/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    </head>
+    
+    <!-- Navbar and Header -->
+    <%- include header.ejs %>
+
+    <p class="notice-gamepad" style="display: none"></p>
+    <div class="off-canvas-wrapper">
+    <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper="">
+    
+    <div class="off-canvas-content" data-off-canvas-content="">
+
+
+    <style>
+    #extra_info{font-size:12px}
+    #extra_info td{padding:3px}
+    .showmore_one p span{margin-right:0}
+    @media (max-width:768px) {
+        .game-container{width:100%}
+    }
+    </style>
+    
+    <section class="fullwidth-game">
+    <div class="row">
+    <div class="large-12 columns" style="text-align: center">
+    <div class="row">
+    <div class="large-12 medium-12 columns game-container" style="text-align: center">
+    <iframe style="max-width: 100%; margin-top: 40px;" src="//www.retrogames.cc/embed/18005-tsuppari-oozumou-japan.html" id="gameFrame" width="700" height="525" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+    <button class="button large start-game" type="button" name="start" style="display: none;">Start Game</button>
+    
+    <script>
+                                $('#gameFrame').attr('src', '');
+                                var save_id = '';
+                                $('.start-game').click(function() {
+                                    $('#gameFrame').show().attr('src', '//www.retrogames.cc/embed/18005-tsuppari-oozumou-japan.html').css('margin-top','40px').focus();
+                                    $('.screenshot').hide();
+                                    $('.start-game').hide();
+                                    $('.start-game-2').hide();
+                                    if (typeof ga != "undefined") {
+                                        ga('send', {
+                                            hitType: 'event',
+                                            eventCategory: 'Games',
+                                            eventAction: 'play',
+                                            eventLabel: '18005'
+                                        });
+                                    }
+                                });
+    
+                                $('.start-game-2').click(function() {
+                                    $('#gameFrame').show().attr('src', '//www.retrogames.cc/embed/18005-tsuppari-oozumou-japan.html?old=1').css('margin-top','40px').focus();
+                                    $('.screenshot').hide();
+                                    $('.start-game').hide();
+                                    $('.start-game-2').hide();
+                                    if (typeof ga != "undefined") {
+                                        ga('send', {
+                                            hitType: 'event',
+                                            eventCategory: 'Games',
+                                            eventAction: 'play',
+                                            eventLabel: '18005'
+                                        });
+                                    }
+                                });
+    
+                                                            // $('.start-game').trigger('click');
+                                                                                    </script>
+    </div>
+    </div>
+    </div>
+    </div>
+    </section>
+
+    <script>
+        $('.fullwidth-game').click(function() {
+            $('#gameFrame').focus();
+        });
+        if (window.top != window) {
+            $('#gameFrame').css('margin-top','0');
+        }
+    
+    
+        $(function() {
+    
+            $(document).on('keydown', function (e) {
+                var e = event || window.event || arguments.callee.caller.arguments[0];
+                if(e && e.keyCode == 122){
+                e.preventDefault();
+                var el = $('#gameFrame')[0];
+                var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen;
+                rfs.call(el);
+                }
+            });
+        });
+    </script>
+    
+
+    
+    </div>
+    </div>
+    </div>
+    
+    <script src="https://www.retrogames.cc/js/chosen.jquery.min.js"></script>
+    <script src="https://www.retrogames.cc/bower_components/what-input/what-input.js"></script>
+    <script src="https://www.retrogames.cc/bower_components/foundation-sites/dist/foundation.js"></script>
+    <script src="https://www.retrogames.cc/js/jquery.showmore.src.js" type="text/javascript"></script>
+    <script src="https://www.retrogames.cc/js/jquery.toast.min.js" type="text/javascript"></script>
+    <script src="https://www.retrogames.cc/js/jquery.loading.min.js" type="text/javascript"></script>
+    <script src="https://www.retrogames.cc/js/cookieconsent.min.js" type="text/javascript"></script>
+    <script src="https://www.retrogames.cc/js/gamepad.js?15" type="text/javascript"></script>
+    <script src="https://www.retrogames.cc/js/app.js?v=20171215"></script>
+    </div>
+    </div>
+    </div></div>
+    <script>
+    
+        var $ = jQuery;
+    
+        if (typeof controllers == 'undefined') {
+            controllers = {};
+        }
+        
+        window.gamepad = new Gamepad();
+        if (!gamepad.init()) {
+            $('.notice-gamepad').html('Your browser doesn\'t seem to support the Gamepad.').show();
+        }
+    
+
+    </script>
+    <script type="text/javascript">var switchTo5x=true;</script>
+    
+    <footer class="white-text">
+        <h3 style="text-align:center">HOW TO PLAY</h3>
+        <p>During the match, you can employ a variety of moves against your opponent.  The most important moment of the fight is the initial charge when the referee begins the match.  A successful charge against your opponent can send the momentum of the match in your favor.
+        </p>
+        <table class="prettytable" rules="all" style="width:100%;">
+            <tbody><tr>
+            <th width="50%">Charge with <a href="/wiki/File:Nintendo-Button-B.png" class="image" title="B button"><img alt="B button" src="/views/gameMedia/Nintendo-Button-B.png" width="24" height="24"></a>
+            </th>
+            <th>Charge with <a href="/wiki/File:Nintendo-Button-A.png" class="image" title="A button"><img alt="A button" src="/views/gameMedia/Nintendo-Button-A.png" width="24" height="24"></a>
+            </th></tr>
+            <tr>
+            <td><div class="floatleft"><a href="/wiki/File:Tsuppari_Oozumou_FC_charge_B.png" class="image"><img alt="Tsuppari Oozumou FC charge B.png" src="//cdn.wikimg.net/en/strategywiki/images/e/eb/Tsuppari_Oozumou_FC_charge_B.png" width="178" height="71"></a></div>
+            <p>Press the B button to charge your opponent regularly.  This won't hurt your opponent, but it will set you up well to dominate the beginning of the fight.
+            </p>
+            </td>
+            <td><div class="floatleft"><a href="/wiki/File:Tsuppari_Oozumou_FC_charge_A.png" class="image"><img alt="Tsuppari Oozumou FC charge A.png" src="//cdn.wikimg.net/en/strategywiki/images/e/e6/Tsuppari_Oozumou_FC_charge_A.png" width="178" height="71"></a></div>
+            <p>Press the A button to charge at your opponent with a head dash.  This can damage your opponent if it succeeds, but it makes your more susceptible to counter attacks if it fails.
+            </p>
+            </td></tr></tbody></table>
+            <br><br>
+            <p>Once the charge is finished, each wrestler must try to use their strength to force the other wrestler off his feet or out of the ring.  When the wrestlers are close to one another, these are the different commands you can try.
+            </p>
+            <table class="prettytable" rules="all" style="width:100%;">
+                <tbody><tr>
+                <th width="50%">Grab with <img alt="B button" src="/views/gameMedia/Nintendo-Button-B.png" width="24" height="24">
+                </th>
+                <th>Push with <img alt="A button" src="/views/gameMedia/Nintendo-Button-A.png" width="24" height="24">
+                </th></tr>
+                <tr>
+                <td><div class="floatleft"><a href="/wiki/File:Tsuppari_Oozumou_FC_grab.png" class="image"><img alt="Tsuppari Oozumou FC grab.png" src="//cdn.wikimg.net/en/strategywiki/images/7/75/Tsuppari_Oozumou_FC_grab.png" width="178" height="71"></a></div>
+                <p>Approach your opponent while pressing the B button to grab onto him.  If your opponent is weak, you can begin to push him out of the ring.
+                </p>
+                </td>
+                <td><div class="floatleft"><a href="/wiki/File:Tsuppari_Oozumou_FC_push.png" class="image"><img alt="Tsuppari Oozumou FC push.png" src="//cdn.wikimg.net/en/strategywiki/images/4/44/Tsuppari_Oozumou_FC_push.png" width="178" height="71"></a></div>
+                <p>To get away from your opponent and recover, you must push the A button to shove him away.  If his grip is strong, you will be unable to get away, and must weaken him up first.
+                </p>
+                </td></tr>
+                <tr>
+                <th>Lift with <a href="/wiki/File:Nintendo-Dpad-Up.png" class="image" title="Up dpad"><img alt="Up dpad" src="/views/gameMedia/Nintendo-Dpad-Up.png" width="18" height="24"></a><b style="font-size:18px">+</b><a href="/wiki/File:Nintendo-Button-B.png" class="image" title="B button"><img alt="B button" src="/views/gameMedia/Nintendo-Button-B.png" width="24" height="24"></a>
+                </th>
+                <th>Flip with Back <b style="font-size:18px">+</b><a href="/wiki/File:Nintendo-Button-B.png" class="image" title="B button"><img alt="B button" src="/views/gameMedia/Nintendo-Button-B.png" width="24" height="24"></a>
+                </th></tr>
+                <tr>
+                <td><div class="floatleft"><a href="/wiki/File:Tsuppari_Oozumou_FC_lift.png" class="image"><img alt="Tsuppari Oozumou FC lift.png" src="//cdn.wikimg.net/en/strategywiki/images/e/ee/Tsuppari_Oozumou_FC_lift.png" width="178" height="71"></a></div>
+                <p>While you grab your opponent, you can lift them off the ground by holding up and pushing B, making it harder for them to resist your pushing.  This is slow and effective, but it takes a lot of strength.
+                </p>
+                </td>
+                <td><div class="floatleft"><a href="/wiki/File:Tsuppari_Oozumou_FC_flip.png" class="image"><img alt="Tsuppari Oozumou FC flip.png" src="//cdn.wikimg.net/en/strategywiki/images/a/aa/Tsuppari_Oozumou_FC_flip.png" width="178" height="71"></a></div>
+                <p>If your opponent is pushing you closer to the edge, you can try to turn the tables on them by flipping them around.  Do this by pressing backwards (the opposite direction that your wrestler is facing) and pressing B.
+                </p>
+                </td></tr></tbody></table>
+                <br><br>
+                <p>If you or your opponent successfully push off one another, you will be momentarily separated.  While you stand apart, you can also perform the following moves.
+                </p>
+                <table class="prettytable" rules="all" style="width:100%;">
+                    <tbody><tr>
+                    <th width="50%">Approach
+                    </th>
+                    <th>Dash with Forward <b style="font-size:18px">+</b><a href="/wiki/File:Nintendo-Button-A.png" class="image" title="A button"><img alt="A button" src="/views/gameMedia/Nintendo-Button-A.png" width="24" height="24"></a>
+                    </th></tr>
+                    <tr>
+                    <td><div class="floatleft"><a href="/wiki/File:Tsuppari_Oozumou_FC_approach.png" class="image"><img alt="Tsuppari Oozumou FC approach.png" src="//cdn.wikimg.net/en/strategywiki/images/5/51/Tsuppari_Oozumou_FC_approach.png" width="178" height="71"></a></div>
+                    <p>While standing apart, you can approach your opponent at regular speed by pushing the control pad towards you opponent.  You can actually move in any direction around the ring using the control pad, including up and down.
+                    </p>
+                    </td>
+                    <td><div class="floatleft"><a href="/wiki/File:Tsuppari_Oozumou_FC_dash.png" class="image"><img alt="Tsuppari Oozumou FC dash.png" src="//cdn.wikimg.net/en/strategywiki/images/8/8f/Tsuppari_Oozumou_FC_dash.png" width="178" height="71"></a></div>
+                    <p>If you press towards the opponent and tap the A button while you are separated, you will dash towards you opponent and push them back with you momentum.
+                    </p>
+                    </td></tr>
+                    <tr>
+                    <th>Slap with <a href="/wiki/File:Nintendo-Button-B.png" class="image" title="B button"><img alt="B button" src="/views/gameMedia/Nintendo-Button-B.png" width="24" height="24"></a>
+                    </th>
+                    <th>Slap down with <a href="/wiki/File:Nintendo-Dpad-Down.png" class="image" title="Down dpad"><img alt="Down dpad" src="/views/gameMedia/Nintendo-Dpad-Down.png" width="18" height="24"></a><b style="font-size:18px">+</b><a href="/wiki/File:Nintendo-Button-B.png" class="image" title="B button"><img alt="B button" src="/views/gameMedia/Nintendo-Button-B.png" width="24" height="24"></a>
+                    </th></tr>
+                    <tr>
+                    <td><div class="floatleft"><a href="/wiki/File:Tsuppari_Oozumou_FC_slap.png" class="image"><img alt="Tsuppari Oozumou FC slap.png" src="//cdn.wikimg.net/en/strategywiki/images/1/11/Tsuppari_Oozumou_FC_slap.png" width="178" height="70"></a></div>
+                    <p>Simply tap the B button to execute a stunning hand slap attack.  This can weaken your opponent and earn you back health, but it leaves you open to counter attack.
+                    </p>
+                    </td>
+                    <td><div class="floatleft"><a href="/wiki/File:Tsuppari_Oozumou_FC_slap_down.png" class="image"><img alt="Tsuppari Oozumou FC slap down.png" src="//cdn.wikimg.net/en/strategywiki/images/6/6c/Tsuppari_Oozumou_FC_slap_down.png" width="178" height="70"></a></div>
+                    <p>If an opponent is dashing towards you, you can use their momentum against them by pressing down and the B button.  This will slap the opponent on the back and force them to lose control.
+                    </p>
+                    </td></tr></tbody></table>
+                    <br><br>
+                    <p>Special finishing moves are also available by performing certain actions at the right time.  They are generally available to you when your health meter is flashing.
+                    </p>
+    </footer>
+    <script src='/js/materialize.js'></script>
+    <script src='/js/init.js'></script>
+</html>
