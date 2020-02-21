@@ -16,7 +16,6 @@ function loadRankings()
         document.querySelector('#loading').style.display = 'none';
         for(var x in data)
         {
-            console.log(data[x]);
             //Add header line of 
             $('#collection').append('<div class="user-entry" id="user-entry'+x+'"><li class="collection-item">' +(parseInt(x)+1)+': '+ data[x].user_name + ':\t\t' + data[x].points +' points</li>');
             $('#user-entry'+x).append('<table class="mdTable2 white-text" id="sumoTable'+x+'" style="display:none"><tbody>')

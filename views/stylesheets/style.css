@@ -50,7 +50,7 @@
   width: -moz-available; /*Firefox compat */
 }
 
-button{
+.swap{
   width: 100%; 
   height: 5cm;
   background-size: center;

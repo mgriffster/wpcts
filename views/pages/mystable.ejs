@@ -340,6 +340,7 @@ for (var attr in meta) {
   </head>
 <script src='/js/jquery.js'></script>
 <script src='/js/mystable.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 <link href="/views/stylesheets/materialize.css" rel="stylesheet">
 <link href="/views/stylesheets/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 
@@ -351,14 +352,14 @@ for (var attr in meta) {
       <form id="teamForm">
         
       </form>
-      <button id="submitTeam" class="btn waves-light" type="submit" name="action" style="
+      <button id="submitTeam" class="btn waves-light stable-button" type="submit" name="action" style="
     float: left;
     width: 40%;
     margin: 5%;
 ">Submit
         <i class="material-icons right">send</i>
       </button>
-      <button id="cancelTeam" class="btn waves-light" style="
+      <button id="cancelTeam" class="btn waves-light stable-button" style="
     float: right;
     width: 40%;
     margin: 5%;
@@ -374,7 +375,9 @@ for (var attr in meta) {
     <%- include header.ejs %>
         <div class="nav-header de white-text">
           <h1>My Favorites</h1>
-          <button id="submitShow" class="btn waves-light">SUBMIT ROSTER
+          <h2>Next Basho is HARU BASHO 2020</h2>
+          <h3>Roster locks will open once the new Banzuke is released!</h3>
+          <button id="submitShow" class="btn waves-light stable-button">SUBMIT ROSTER
             <i style="float:right" class="material-icons">people</i></button>
         </div>
       

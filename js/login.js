@@ -51,7 +51,12 @@ function create(event){
     $.post('/create', {username:name, password:pw, email:em}).done(function(data){
         if(data.success !== undefined && !data.success)
         {
-            alert('Unsuccessful account creation. Ask McMichael or just give up.');
+            Swal.fire({
+                title: 'Error!',
+                text: 'Unsuccessful account creation. Ask McMichael or just give up.',
+                icon: 'error',
+                confirmButtonText: 'Cool'
+              })
         }
         else if(data.success !== undefined && data.success == true)
         {

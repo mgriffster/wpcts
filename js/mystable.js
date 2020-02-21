@@ -46,10 +46,20 @@ $(document).ready(function() {
                 {
                     $('#placeholder-overlay').click();
                     deadDiv.style.display = 'none';
-                    alert('Successfully removed ' + sumoRemove + ' from your stable. You can add them again through the Rikishi Info page.');
+                    Swal.fire({
+                        title: 'Removed',
+                        text: 'Successfully removed ' + sumoRemove + ' from your stable. You can add them again through the Rikishi Info page.',
+                        icon: 'success',
+                        confirmButtonText: 'Confirm'
+                      });
                 }
                 else{
-                    alert('There has been an issue removing ' + sumoRemove + ' from your stable. If you do not see them in your stable page or have issues with adding new wrestlers please contact McMichael');
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'There has been an issue removing ' + sumoRemove + ' from your stable. If you do not see them in your stable page or have issues with adding new wrestlers please contact McMichael',
+                        icon: 'error',
+                        confirmButtonText: 'Darn it'
+                      });
                 }
             });
         });
@@ -60,7 +70,12 @@ $(document).ready(function() {
             let roster = [];
             if(names.length > 5 && (substitute == undefined || substitute == null))
             {
-                alert('You must select a substitute if you have 6 Rikishi in your favorites.');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'You must select a substitute if you have 6 Rikishi in your favorites.',
+                    icon: 'error',
+                    confirmButtonText: 'Okay'
+                  });
                 return;
             }
             for(var x = 0; x < names.length; x++)
@@ -69,7 +84,12 @@ $(document).ready(function() {
             }
 
             $.post('/submitroster', {active:roster, sub:substitute}, function(data){
-                alert(data);
+                Swal.fire({
+                    title: 'Submission Result',
+                    text: data,
+                    icon: 'info',
+                    confirmButtonText: 'Cool'
+                  });
             });
         });
 

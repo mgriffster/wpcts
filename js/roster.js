@@ -1,6 +1,9 @@
 $(document).ready(function(){
     $.get('/getpoints', function(data){
-        document.getElementById('points').innerText = 'Your current points: ' + data.totalpoints.points;
+        if(data.totalpoints.points)
+        {
+            document.getElementById('points').innerText = 'Your current points: ' + data.totalpoints.points;
+        }
    });
 
    var anchor = document.getElementById('portfolio').childNodes[1].childNodes[1];
