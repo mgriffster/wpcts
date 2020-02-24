@@ -423,7 +423,7 @@ app.get('/getrikishi', function(req,res){
     let data = {};
     db.any("select * from rikishi where rank like 'Maegashira%' AND active = true order by rank asc").then(function(response){
         data.maegashira = response;
-        db.any("select * from rikishi where rank like 'Ozeki' OR rank like 'Komusubi' OR rank like 'Sekiwake' AND active = true").then(function(response){
+        db.any("select * from rikishi where (rank like 'Ozeki' OR rank like 'Komusubi' OR rank like 'Sekiwake') AND active = true").then(function(response){
             data.sanyaku = response;
             db.any("select * from rikishi where rank like 'Yokozuna' AND active = true").then(function(response){
                 data.yokozuna = response;
