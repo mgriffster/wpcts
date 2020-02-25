@@ -25,7 +25,7 @@ Make sure points are grabbed from correct basho (remove points for current syste
 //this is the list of bashos for which we have data
 const basho_list = ['Haru20', 'Hatsu20', 'Kyushu19', 'Aki19'];
 
-const sanyaku = ['Goeido', 'Takakeisho', 'Takayasu', 'Asanoyama', 'Abi', 'Daiesho'];
+const sanyaku = ['Takakeisho', 'Shodai', 'Asanoyama', 'Hokutofuji', 'Endo'];
 
 const yokozuna = ['Hakuho', 'Kakuryu'];
 
@@ -463,13 +463,13 @@ app.post('/favorite', function(req,res){
         if(currentSumo.sumo.length >= 6)
         {
             favorite.success = false;
-            favorite.message = 'You already have 6 sumo wrestlers favorited, please remove them from the My Stable page';
+            favorite.message = 'You already have 6 sumo wrestlers favorited, please remove them from the My Favorites page';
             res.send(favorite);
         }
         else if(currentSumo.sumo.includes(newSumo))
         {
             favorite.success = false;
-            favorite.message = 'This sumo wrestler is already in your favorites, to remove them go to your My Stable page.';
+            favorite.message = 'This sumo wrestler is already in your favorites, to remove them go to your My Favorites page.';
             res.send(favorite);
         }
         else if(currentSumo.sanyaku && sanyaku.includes(newSumo))

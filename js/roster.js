@@ -48,6 +48,76 @@ $(document).ready(function(){
     
    }).then(function(){
     $.getScript("//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/gallery.min.opt.js?0");
+
+    $.get('/charts', function(data){
+            
+        let ringNames = Object.keys(data);
+        
+        for(var x in ringNames)
+        {
+            let orderedBashoList = ['Aki19', 'Kyushu19', 'Hatsu20'];
+            let ctx = document.getElementById('chart_'+ringNames[x]);
+            if(!ctx)
+            {
+                continue;
+            }
+            let dataSet = [];
+            for(var i in orderedBashoList)
+            {
+                dataSet.push(data[ringNames[x]][orderedBashoList[i]]);
+                orderedBashoList[i] = orderedBashoList[i].slice(0, orderedBashoList[i].length-2) + ' 20' + orderedBashoList[i].slice(orderedBashoList[i].length-2);
+            }
+            var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'bar',
+            // The data for our dataset
+            data: {
+                labels: orderedBashoList,
+                datasets: [{
+                    data: dataSet,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            // Configuration options go here
+            options: {
+                legend:{
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: "Points By Tournament",
+                    fontSize: 20
+                },
+                scales: {
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                        max: 25,
+                    }
+                }],
+            },
+        }
+        });
+    }
+});
+
    });
+   
    
 });
