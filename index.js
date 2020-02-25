@@ -207,8 +207,6 @@ app.post('/login', function(req,res){
 });
 
 app.post('/submitroster', function(req,res){
-    res.send('Rosters for the Haru (Spring) Basho can not be submitted until the Banzuke (ranking) is released on February 24th.');
-    return;
     var active = req.body.active;
     var sub = req.body.sub;
 
