@@ -1,3 +1,4 @@
+let active = [];
 
 $(document).ready(function() {
     var anchor = document.getElementById('portfolio').childNodes[1].childNodes[1];
@@ -16,6 +17,8 @@ $(document).ready(function() {
             var newForm = document.createElement("p");
             newForm.innerHTML = '<label><input class="with-gap" name="group1" type="radio" value="'+ data[x].ring_name +'"/><span>'+ data[x].ring_name +'</span></label>'
             submit.appendChild(newForm);
+
+            active.push(data[x].ring_name);
             }
         }
         else
@@ -27,6 +30,8 @@ $(document).ready(function() {
             newDiv.className = 'd hx hf gu gallery-item gallery-expand ce maegashira';
             newDiv.innerHTML = html;
             anchor.appendChild(newDiv);
+
+            active.push(data[x].ring_name);
             }
 
             var newForm = document.querySelector("#alertSub");
@@ -65,9 +70,10 @@ $(document).ready(function() {
         });
         
         $('#submitTeam').click(function(){
+
             let names = $("input[type='radio'][name='group1']:not(:checked)");
             let substitute = $("input[type='radio'][name='group1']:checked").val();
-            let roster = [];
+            let roster = active;
             if(names.length > 5 && (substitute == undefined || substitute == null))
             {
                 Swal.fire({
@@ -89,6 +95,9 @@ $(document).ready(function() {
                     text: data,
                     icon: 'info',
                     confirmButtonText: 'Cool'
+                  }).then(() =>{
+                    $("#team").css("display", "none");
+                    $("#teamOverlay").css("display", "none");
                   });
             });
         });

@@ -588,7 +588,11 @@ async function getPoints(userName)
     }
     let result = {};
     result = await db.oneOrNone('select * from roster where user_name = $1', [userName]).catch(err => console.log(err));
-    
+    if(!result)
+    {
+        return 'ERROR';
+    }
+
     if(result.substitute_day != null)
     {
         let before_injury = await db.one('select SUM(points) as points from basho_points bp inner join roster r on (bp.ring_name = ANY ($1) AND bp.basho=$2 AND bp.day < $3) WHERE r.user_name = $4', [result.active, current_basho, result.substitute_day, result.user_name]);

@@ -17,7 +17,7 @@ function loadRankings()
         for(var x in data)
         {
             //Add header line of 
-            $('#collection').append('<div class="user-entry" id="user-entry'+x+'"><li class="collection-item">' +(parseInt(x)+1)+': '+ data[x].user_name + ':\t\t' + data[x].points +' points</li>');
+            $('#collection').append('<div class="user-entry" id="user-entry'+x+'"><li class="collection-item">' +(parseInt(x)+1)+': '+ data[x].user_name + ':\t\t' + (data[x].points ? data[x].points:0) +' points</li>');
             $('#user-entry'+x).append('<table class="mdTable2 white-text" id="sumoTable'+x+'" style="display:none"><tbody>')
             for(var y in data[x].roster)
             {
