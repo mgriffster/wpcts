@@ -278,6 +278,12 @@ app.post('/results', async function(req,res){
         for(var x in user_rosters)
         {
             let next_user = await getPoints(user_rosters[x].user_name);
+            if(next_user.failure)
+            {
+                console.log("Failure in /results: " + user_rosters[x].user_name);
+                res.send('Fetching points has failed.');
+                return;
+            }
             data.push({});
             data[x].points = next_user.totalpoints.points;
             data[x].user_name = next_user.user_name;
@@ -586,11 +592,11 @@ async function getPoints(userName)
     {
         return 'ERROR';
     }
-    let result = {};
-    result = await db.oneOrNone('select * from roster where user_name = $1', [userName]).catch(err => console.log(err));
+    let result = await db.one('select * from roster where user_name = $1 AND basho = $2', [userName, current_basho]).catch(err => console.log(err));
     if(!result)
     {
-        return 'ERROR';
+        result = {failure:true};
+        return result;
     }
 
     if(result.substitute_day != null)
