@@ -84,10 +84,6 @@ $(document).ready(function() {
                   });
                 return;
             }
-            for(var x = 0; x < names.length; x++)
-            {
-                roster.push(names[x].value);
-            }
 
             $.post('/submitroster', {active:roster, sub:substitute}, function(data){
                 Swal.fire({
