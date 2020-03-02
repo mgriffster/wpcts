@@ -292,11 +292,13 @@ app.post('/results', async function(req,res){
             {
                 var i = data[x].roster.indexOf(next_user.injured);
                 data[x].roster[i] = data[x].roster[i] + ' (Injured)';
-                data[x].roster.push(next_user.substitute + ' (Active Substitute)')
+                var j = data[x].roster.indexOf(next_user.substitute);
+                data[x].roster[j] = data[x].roster[j] + ' (Active Substitute)';
             }
             else
             {
-                data[x].roster.push(next_user.substitute + ' (Substitute)');
+                var j = data[x].roster.indexOf(next_user.substitute);
+                data[x].roster[j] = data[x].roster[j] + ' (Substitute)';
             }
 
         }
@@ -457,32 +459,37 @@ app.post('/favorite', function(req,res){
     var currentSumo = [];
     
     var newSumo = req.body.sumoFavorite;
+
     if(yokozuna.includes(newSumo)){
         favorite.success = false;
         favorite.message = 'You can not add a Yokozuna to your stable because they have swords and that is not fair.';
         res.send(favorite);
+        return;
     }
     else{
         db.oneOrNone('SELECT sumo,sanyaku FROM favorited WHERE user_name = $1', [req.session['userName']]).then(function(data)
-    {
+        {
         currentSumo = data;
         if(currentSumo.sumo.length >= 6)
         {
             favorite.success = false;
             favorite.message = 'You already have 6 sumo wrestlers favorited, please remove them from the My Favorites page';
             res.send(favorite);
+            return;
         }
         else if(currentSumo.sumo.includes(newSumo))
         {
             favorite.success = false;
             favorite.message = 'This sumo wrestler is already in your favorites, to remove them go to your My Favorites page.';
             res.send(favorite);
+            return;
         }
         else if(currentSumo.sanyaku && sanyaku.includes(newSumo))
         {
             favorite.success = false;
             favorite.message = 'You already have one Sanyaku in your stable. You must remove them first.';
             res.send(favorite);
+            return;
         }
         else
         {
