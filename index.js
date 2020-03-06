@@ -452,7 +452,7 @@ app.post('/favorite', function(req,res){
     
     var favorite = {};
     // Use to lock after Jan 12
-    // favorite.message = "Rosters are currently locked for the January Basho.";
+    // favorite.message = "Rosters are currently locked for the March Basho.";
     // favorite.success = false;
     // res.send(favorite);
     //Commented out after roster locks to prevent adding rikishi

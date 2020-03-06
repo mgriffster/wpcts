@@ -104,7 +104,7 @@ $(document).ready(function() {
             
             for(var x in ringNames)
             {
-                let orderedBashoList = ['Aki19', 'Kyushu19', 'Hatsu20'];
+                let orderedBashoList = ['Aki19', 'Kyushu19', 'Hatsu20', 'Haru20'];
                 let ctx = document.getElementById('chart_'+ringNames[x]);
                 if(!ctx)
                 {
