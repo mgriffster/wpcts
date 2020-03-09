@@ -8,9 +8,7 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var pgp = require('pg-promise')();
-var db = pgp('postgres://daipfwmuzapzlw:17fff977a27e0a3ca5757456d71b955fe4f25929aed9dd98d39a33a73e10efcf@ec2-54-227-251-33.compute-1.amazonaws.com:5432/d5ngkb7e3s2l2s?ssl=true')
-var jsonParser = bodyParser.json();
-
+var db = pgp('postgres://daipfwmuzapzlw:17fff977a27e0a3ca5757456d71b955fe4f25929aed9dd98d39a33a73e10efcf@ec2-54-227-251-33.compute-1.amazonaws.com:5432/d5ngkb7e3s2l2s?ssl=true');
 /*
 THINGS TO UPDATE DURING/BETWEEN TOURNAMENTS:
 
@@ -18,7 +16,7 @@ Roster lock: Comment out functional code in Remove/Favorite to prevent using tho
 
 Rikishi updates: Update makuuchi ranks and active sanyaku when Banzuke is released
 
-Make sure points are grabbed from correct basho (remove points for current system, change current basho variable under new)
+Make sure points are grabbed from correct basho
 
 */
 
@@ -209,7 +207,8 @@ app.post('/login', function(req,res){
 app.post('/submitroster', function(req,res){
     var active = req.body.active;
     var sub = req.body.sub;
-
+    //Lock after submission deadline
+    //res.send('Rosters have been locked');
     db.oneOrNone('insert into roster(user_name, active, substitute, basho) SELECT $1, $2, $3, $4 WHERE not exists (select * from roster where user_name = $1 AND basho = $4) RETURNING user_name', [req.session['userName'], active, sub, current_basho]).then(function(data){
         if(typeof data == 'undefined' || data == null)
         {
