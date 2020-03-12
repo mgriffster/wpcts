@@ -301,7 +301,6 @@ app.post('/results', async function(req,res){
             {
                 var j = data[x].roster.push(next_user.substitute + ' (Sub)');
             }
-
         }
         data.sort((a, b) => parseFloat(b.points) - parseFloat(a.points));
         res.send(data);
@@ -608,13 +607,12 @@ async function getPoints(userName)
     {
         return 'ERROR';
     }
-    let result = await db.one('select * from roster where user_name = $1 AND basho = $2', [userName, current_basho]).catch(err => console.log(err));
+    let result = await db.one('select * from roster where user_name = $1 AND basho = $2', [userName, current_basho]).catch(err => console.log('Error D1: '+err));
     if(!result)
     {
         result = {failure:true};
         return result;
     }
-
     if(result.substitute_day != null)
     {
         let before_injury = await db.one('select SUM(points) as points from basho_points bp WHERE bp.ring_name = ANY ($1) AND bp.basho=$2 AND bp.day < $3', [result.active, current_basho, result.substitute_day]);
@@ -625,7 +623,7 @@ async function getPoints(userName)
         let subroster = result.active.filter(sumo => sumo != result.injured);
         
         subroster.push(result.substitute);
-        let after_injury = await db.one('select SUM(points) as points from basho_points bp WHERE bp.ring_name = ANY ($1) AND bp.basho=$2 AND bp.day >= $3)', [subroster, current_basho, result.substitute_day]);
+        let after_injury = await db.one('select SUM(points) as points from basho_points bp WHERE bp.ring_name = ANY ($1) AND bp.basho=$2 AND bp.day >= $3', [subroster, current_basho, result.substitute_day]);
         if(after_injury.points == null)
         {
             after_injury.points = 0;
