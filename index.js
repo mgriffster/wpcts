@@ -21,13 +21,14 @@ Make sure points are grabbed from correct basho
 */
 
 //this is the list of bashos for which we have data
-const basho_list = ['Haru20', 'Hatsu20', 'Kyushu19', 'Aki19'];
+const basho_list = ['Nagoya20','Haru20', 'Hatsu20', 'Kyushu19', 'Aki19'];
 
-const sanyaku = ['Takakeisho', 'Shodai', 'Asanoyama', 'Hokutofuji', 'Endo'];
+const sanyaku = ['Takakeisho', 'Daieisho', 'Asanoyama', 'Mitakeumi', 'Okinoumi','Shodai'];
 
 const yokozuna = ['Hakuho', 'Kakuryu'];
 
-const current_basho = 'Haru20';
+//Make sure to export results to fantasy_results table before changing current basho (will break leaderboard otherwise)
+const current_basho = 'Nagoya20';
 
 var app = express();
 app.use(express.static(__dirname));
@@ -155,15 +156,16 @@ app.get('/roster', function(req,res){
     }
 });
 
-app.get('/videogame', function(req,res){
-    if(req.session !== undefined && req.session.userName !== undefined)
-    {
-        res.render('pages/videogame');
-    }
-    else{
-        res.render('pages/login');
-    }
-});
+//Removed for now
+// app.get('/videogame', function(req,res){
+//     if(req.session !== undefined && req.session.userName !== undefined)
+//     {
+//         res.render('pages/videogame');
+//     }
+//     else{
+//         res.render('pages/login');
+//     }
+// });
 
 app.get('/theprophecy', function(req,res){
     res.render('pages/wide');
@@ -346,7 +348,6 @@ app.get('/currentbashorankings', function(req,res){
     })
        .then(data => {
                res.send(data);
-               //Export results code goes here to update tournament results
        })
         .catch(error => {
             console.log(error)
@@ -357,7 +358,7 @@ app.get('/currentbashorankings', function(req,res){
 
 
 //Export results code for end of basho
-// app.get('/exportHatsu20', async function(req,res)
+// app.get('/exportHaru20', async function(req,res)
 // {
 //     let user_rosters = await db.any('select * from roster where basho = $1', current_basho);
 //     let data = [];
@@ -384,17 +385,17 @@ app.get('/currentbashorankings', function(req,res){
     
 //     for(var x in data)
 //     {
-//         await db.none('insert into fantasy_results (user_name, finish_position, basho, points, roster) VALUES($1, $2, $3, $4, $5)', [data[x].user_name, parseInt(x)+1, current_basho, data[x].points, data[x].roster]);
+//         await db.none('insert into fantasy_results (user_name, finish_position, basho, points, roster) VALUES($1, $2, $3, $4, $5)', [data[x].user_name, parseInt(x)+1, current_basho, parseInt(data[x].points), data[x].roster]);
 //     }
 
-//     res.send('Hope it worked');
+//     res.send(data);
 // });
 
 
 
 
 app.post('/remove', function(req,res){
-    // Use to lock after Jan 12
+    // Use to lock\
     // var open = false;
     // res.send(open);
     //Commented out after roster locks to prevent removing rikishi
@@ -537,7 +538,7 @@ app.get('/getmyfavorites', function(req,res){
 });
 
 app.get('/getchodes', function(req,res){
-    db.any('select distinct on (r.ring_name) r.*, SUM(bp.points) as points from rikishi r left join basho_points bp on bp.ring_name = r.ring_name where r.weight >= r.height and r.active = true GROUP BY r.ring_name, r.name').then(data => res.send(data));
+    db.any('select distinct on (r.ring_name) r.*, SUM(bp.points) as points from rikishi r left join basho_points bp on (bp.ring_name = r.ring_name AND bp.basho = $1) where r.weight >= r.height and r.active = true GROUP BY r.ring_name, r.name', current_basho).then(data => res.send(data));
 });
 
 app.get('/charts', function(req,res){

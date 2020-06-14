@@ -15,7 +15,7 @@ $(document).ready(function() {
             anchor.appendChild(newDiv);
         }
     }).then(function(){
-        $('#chodePoints').text('Chode Points: ' + chodepoints);
+        $('#chodePoints').text('Current tournament ChodePoints™: ' + chodepoints);
         $.getScript("//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/gallery.min.opt.js?0");
     });
 });
