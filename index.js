@@ -630,6 +630,9 @@ app.post('/emailresetrequest', function(req,res){
 
         db.one('select count(*) from user_info where email = $1', [email]).then(function(data){
             if(data.count == 1){
+                //remove old reset requests so there aren't multiple valid at the same time
+                deleteResetRequestsByEmail(email);
+
                 var transporter = nodemailer.createTransport({
                     host:'mail.privateemail.com',
                     port:587,
@@ -698,6 +701,11 @@ app.listen(PORT, () => console.log('Listening on ' + PORT));
 function deleteResetRequest(resetId){
     db.none("delete from reset_requests where reset_id = $1", resetId)
     .catch(err => console.log("Could not delete reset id " + resetId + " error: " +err));
+}
+
+function deleteResetRequestsByEmail(email){
+    db.none("delete from reset_requests where email = $1", email)
+.catch(err => console.log("Could not delete reset request for email " + email + " error: " +err));
 }
 
 function changePassword(username, password){
