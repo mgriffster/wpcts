@@ -1,0 +1,18 @@
+body {
+    background: #F44336;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(right, #F44336, rgb(6, 8, 4));
+    background: -moz-linear-gradient(right, #F44336, rgb(6, 8, 4));
+    background: -o-linear-gradient(right, #F44336, rgb(6, 8, 4));
+    background: linear-gradient(to left, #F44336, rgb(6, 8, 4));
+    font-family: "Roboto", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.invalid-page{
+    margin-top:10%;
+    text-align:center;
+    color:whitesmoke;
+    font-size:20;
+}

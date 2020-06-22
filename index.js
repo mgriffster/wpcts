@@ -1,14 +1,17 @@
-const cool = require('cool-ascii-faces');
+const path = require('path');
 const express = require('express');
 const session = require('express-session');
-const path = require('path');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 5000;
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+const shortid = require('shortid');
 const saltRounds = 10;
+const fs = require('fs');
 var pgp = require('pg-promise')();
-var db = pgp('postgres://daipfwmuzapzlw:17fff977a27e0a3ca5757456d71b955fe4f25929aed9dd98d39a33a73e10efcf@ec2-54-227-251-33.compute-1.amazonaws.com:5432/d5ngkb7e3s2l2s?ssl=true');
+var db = pgp(process.env.DBURL);
+
 /*
 THINGS TO UPDATE DURING/BETWEEN TOURNAMENTS:
 
@@ -16,7 +19,7 @@ Roster lock: Comment out functional code in Remove/Favorite to prevent using tho
 
 Rikishi updates: Update makuuchi ranks and active sanyaku when Banzuke is released
 
-Make sure points are grabbed from correct basho
+Make sure points are grabbed from correct basho for the export
 
 */
 
@@ -156,6 +159,24 @@ app.get('/roster', function(req,res){
     }
 });
 
+app.get('/resetpassword', async function(req,res){
+    let resetValid = false;
+    db.one('select * from reset_requests where reset_id = $1', req.query.resetId)
+    .then(function(data){
+        let resetValid = validateResetRequest(data);
+        if(resetValid){
+            res.render('pages/reset');
+        }
+        else{
+            res.render('pages/invalidreset');
+        }
+    })
+    .catch(function(err){
+        res.render('pages/invalidreset');
+        return;
+    });
+});
+
 //Removed for now
 // app.get('/videogame', function(req,res){
 //     if(req.session !== undefined && req.session.userName !== undefined)
@@ -177,6 +198,9 @@ app.get('/theprophecy', function(req,res){
 
 /**
  * API SECTION
+ * 
+ * 
+ * 
  */
 app.post('/login', function(req,res){
         var login = {
@@ -207,12 +231,11 @@ app.post('/login', function(req,res){
 });
 
 app.post('/submitroster', function(req,res){
-    res.send('Rosters have been locked for the Haru Basho 2020. If you would still like to participate please contact the site administrator or e-mail GYOJI@WPCTS.COM');
-    return;
+    // res.send('Rosters have been locked for the Nagoya Basho 2020. If you would still like to participate please contact the site administrator or e-mail GYOJI@WPCTS.COM');
+    // return;
     var active = req.body.active;
     var sub = req.body.sub;
-    //Lock after submission deadline
-    //res.send('Rosters have been locked');
+
     db.oneOrNone('insert into roster(user_name, active, substitute, basho) SELECT $1, $2, $3, $4 WHERE not exists (select * from roster where user_name = $1 AND basho = $4) RETURNING user_name', [req.session['userName'], active, sub, current_basho]).then(function(data){
         if(typeof data == 'undefined' || data == null)
         {
@@ -244,9 +267,10 @@ app.post('/create', function(req,res){
     var user = {
         "name": req.body.username,
         "password": req.body.password,
-        "email": req.body.email
+        "email": (req.body.email).toLowerCase()
     }
-    db.any('SELECT * FROM user_info WHERE user_name = $1', user.name).then(function(data){
+
+    db.any('SELECT * FROM user_info WHERE user_name = $1 OR email = $2', [user.name,user.email]).then(function(data){
         if(data.length > 0)
         {
             user.success = false;
@@ -259,6 +283,10 @@ app.post('/create', function(req,res){
             req.session['userName'] = user.name;
             res.send(user);
         }
+    }).catch(function(err){
+        console.log("Could not create user account: " + err);
+        user.success = false;
+        res.send(user);
     });
 });
 
@@ -274,7 +302,7 @@ app.post('/results', async function(req,res){
     {
         db.any('select user_name,finish_position,points,roster from fantasy_results where basho = $1 order by finish_position;', basho).then(function(data){
             res.send(data);
-        }).catch(err => console.log(error));
+        }).catch(err => console.log("Issue fetching tournament results" + error));
     }
     else
     {
@@ -341,7 +369,7 @@ app.get('/currentbashorankings', function(req,res){
                     }
                 }
                 return {points, sumo};
-            }).catch(err => console.log(err));
+            }).catch(err => console.log("Issue fetching rankings: " + err));
         }
         names.sort((a, b) => parseFloat(b.data.points) - parseFloat(a.data.points));
         return {names};
@@ -407,7 +435,7 @@ app.post('/remove', function(req,res){
         db.none('update favorited set sumo = array_remove(sumo, $1), sanyaku = false where user_name = $2', [sumo,name]).then(function(data){
             res.send(true);
         }).catch(err=>{
-            console.log(err);
+            console.log("Issue removing sanyaku sumo from favorites: " + err);
             res.send(false);
         });
     }
@@ -417,7 +445,7 @@ app.post('/remove', function(req,res){
             res.send(true);
         }).catch(err=>
             {
-                console.log(err);
+                console.log("Issue removing sumo from favorites: "+err);
                 res.send(false);
             });
     }
@@ -435,16 +463,16 @@ app.get('/getrikishi', function(req,res){
             db.any("select * from rikishi where rank like 'Yokozuna' AND active = true").then(function(response){
                 data.yokozuna = response;
                 res.send(data);
-            }).catch(err => res.send(err));
-        }).catch(err => res.send(err));
-    }).catch(err => res.send(err));
+            }).catch(err => res.send("Issue fetching Yokozuna: " +err));
+        }).catch(err => res.send("Issue fetching Sanyaku: "+err));
+    }).catch(err => res.send("Issue fetching Maegashira: "+err));
 });
 
 app.post('/getbashovideos', function(req,res){
     var basho = req.body.tournament;
     db.any('select * from basho_video where basho = $1 order by day desc', basho).then(function(data){
         res.send(data);
-    }).catch(err => console.log(err));
+    }).catch(err => console.log("Issue fetching videos: "+err));
 });
 
 
@@ -503,7 +531,7 @@ app.post('/favorite', function(req,res){
                 {
                     
                 }).catch(err => {
-                    console.log(err);   
+                    console.log("Issue updating favorited sumo list with sanyaku:" +err);   
                 });
                 res.send(favorite);
             }
@@ -513,7 +541,7 @@ app.post('/favorite', function(req,res){
                 {
                     
                 }).catch(err => {
-                    console.log(err);   
+                    console.log("Issue updating favorited sumo list:"+err);   
                 });
                 res.send(favorite);
             }
@@ -532,13 +560,15 @@ app.get('/getmyfavorites', function(req,res){
     .then(function(data){
         res.send(data);
     }).catch(err=>{
-        console.log(err);
+        console.log("Issue fetching favorites for user:" +req.session['userName']+" Error:"+ err);
     });
 
 });
 
 app.get('/getchodes', function(req,res){
-    db.any('select distinct on (r.ring_name) r.*, SUM(bp.points) as points from rikishi r left join basho_points bp on (bp.ring_name = r.ring_name AND bp.basho = $1) where r.weight >= r.height and r.active = true GROUP BY r.ring_name, r.name', current_basho).then(data => res.send(data));
+    db.any('select distinct on (r.ring_name) r.*, SUM(bp.points) as points from rikishi r left join basho_points bp on (bp.ring_name = r.ring_name AND bp.basho = $1) where r.weight >= r.height and r.active = true GROUP BY r.ring_name, r.name', current_basho)
+    .then(data => res.send(data))
+    .catch(err => console.log("Issue fetching Chode data: "+err));
 });
 
 app.get('/charts', function(req,res){
@@ -559,15 +589,99 @@ app.get('/charts', function(req,res){
         }
         res.send(formattedMap);
 
-    }).catch(err => console.log(err));
+    }).catch(err => console.log("Issue fetching charts:" +err));
 });
 
-app.get('/test', async function(req,res){
-    let result = await db.one('select * from roster where user_name = $1 AND basho = $2', ['mcmichael', 'Haru20']).catch(err => console.log(err));
-    console.log(result);
+app.post('/changepassword', function(req,res){
+    if(req.body.password.length < 6){
+        res.send(false);
+    }
+    db.one('select * from reset_requests where reset_id = $1', req.body.resetId)
+    .then(function(data){
+        //Validate reset request
+        let resetValid = validateResetRequest(data);
+        if(resetValid){
+            //Use valid reset request email to get username
+            db.one("select * from user_info where email = $1", data.email)
+            .then(function(data){
+                changePassword(data.user_name, req.body.password);
+                deleteResetRequest(req.body.resetId);
+                res.send(true);
+            }).catch(function(err){
+                console.log("Issue while retrieving user info for reset request: " + err);
+                res.send(false);
+            });
+            
+        }
+        else{
+            res.send(false);
+        }
+    })
+    .catch(function(err){
+        console.log("Issue while changing password :" + err);
+        res.send(false);
+    });
+    
+});
 
-    let points = 
-    console.log(points);
+app.post('/emailresetrequest', function(req,res){
+
+        let email = (req.body.email).toLowerCase();
+
+        db.one('select count(*) from user_info where email = $1', [email]).then(function(data){
+            if(data.count == 1){
+                var transporter = nodemailer.createTransport({
+                    host:'mail.privateemail.com',
+                    port:587,
+                    secure:false,
+                    auth:{
+                        type:'login',
+                        user:'gyoji@wpcts.com',
+                        pass: process.env.EMAIL_PASS
+                    }
+                });
+                fs.readFile('views/partials/resetpasswordemail.html', 'utf8', function (err,data) {
+                    if (err) {
+                      return console.log(err);
+                    }
+                    var resetId = shortid.generate();
+                    let emailHtml = data.replace(/REPLACEWITHRESETID/g, resetId);
+                    var mailOptions = {
+                    from:'noreply@wpcts.com',
+                    to: email,
+                    subject:'WPCTSumo: Request to reset your password.',
+                    html: emailHtml
+                    };
+
+                    transporter.sendMail(mailOptions, function(error, info){
+                        if (error) {
+                            console.log("Issue while sending password reset email: "+ error);
+                            res.send(false);
+                          } else {
+                            db.none('insert into reset_requests(email,reset_id) VALUES ($1, $2);', [email, resetId])
+                            .catch(function(err){
+                                console.log("Issue while insert reset request: " + err); 
+                                res.send(false);
+                            });
+                            console.log('Email sent: ' + info.response);
+                            res.send(true);
+                          }
+                    });
+                });
+            }
+            else{
+                if(data.count > 1){
+                    console.log("DUPLICATE EMAIL DETECTED: " + email);
+                }
+                console.log("Unsuccessful reset e-mail attempt for: " + email);
+                res.send(true);
+            }
+        }).catch(function(err){
+            console.log(err);
+            res.send(false);
+        });
+
+        
 });
 
 app.listen(PORT, () => console.log('Listening on ' + PORT));
@@ -578,7 +692,44 @@ app.listen(PORT, () => console.log('Listening on ' + PORT));
 
 /**
  * SUPPORT FUNCTION SECTION
+ * 
+ * 
  */
+function deleteResetRequest(resetId){
+    db.none("delete from reset_requests where reset_id = $1", resetId)
+    .catch(err => console.log("Could not delete reset id " + resetId + " error: " +err));
+}
+
+function changePassword(username, password){
+    bcrypt.hash(password, saltRounds, function(err, hash) {
+        if(err){
+            console.log("Issue hashing password for user: " + username + " Error:" + err);
+        }
+        else{
+            db.none("UPDATE user_info set password=$1 WHERE user_name=$2", [hash, username]).then(function(){
+            }).catch(function(err){
+                console.log("Error while updating password: " + err);
+            });
+        }
+    });
+}
+
+function validateResetRequest(resetRequest){
+    if(resetRequest.time_created === undefined){
+        return false;
+    }
+
+    let resetRequestedTime = new Date(resetRequest.time_created);
+    let currentTime = new Date();
+    if(currentTime.getTime() - resetRequestedTime.getTime() < 3600000 ){
+       return true;
+    }
+    else{
+        return false;
+    }
+}
+
+
 function addUser(userInfo){
     bcrypt.hash(userInfo.password, saltRounds, function(err, hash) {
         if(err)

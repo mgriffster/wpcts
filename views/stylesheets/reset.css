@@ -1,18 +1,13 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
-.login-page {
+.reset-page {
     width: 360px;
     padding: 8% 0 0;
     margin: auto;
 }
 
-.swal-size{
-    height: 80%;
-    width: 50%;
-    font-size: 2rem;
-}
-
 .form {
     position: relative;
+    top: 20%;
     z-index: 1;
     background: #FFFFFF;
     max-width: 360px;
@@ -64,14 +59,6 @@
 .form .message a {
     color: rgb(30, 152, 209);
     text-decoration: none;
-}
-
-.form #register-form {
-    display: none;
-}
-
-.form #reset-form{
-    display: none;
 }
 
 .container {
