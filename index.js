@@ -12,6 +12,8 @@ const fs = require('fs');
 var pgp = require('pg-promise')();
 var db = pgp(process.env.DBURL);
 
+
+
 /*
 THINGS TO UPDATE DURING/BETWEEN TOURNAMENTS:
 
@@ -23,16 +25,29 @@ Make sure points are grabbed from correct basho for the export
 
 */
 
-//this is the list of bashos for which we have data
+//this is the list of bashos for which we have data, not used for anything yet but to remind me
 const basho_list = ['Nagoya20','Haru20', 'Hatsu20', 'Kyushu19', 'Aki19'];
 
+//Current high ranked rikishi
 const sanyaku = ['Takakeisho', 'Daieisho', 'Asanoyama', 'Mitakeumi', 'Okinoumi','Shodai'];
-
 const yokozuna = ['Hakuho', 'Kakuryu'];
 
 //Make sure to export results to fantasy_results table before changing current basho (will break leaderboard otherwise)
 const current_basho = 'Nagoya20';
 
+module.exports = function(){
+    this.current_basho = current_basho;
+    this.basho_list = basho_list;
+    this.sanyaku = sanyaku;
+    this.yokozuna = yokozuna;
+    this.saltRounds = saltRounds;
+    this.db = db;
+};
+require('./imports/utils')();
+var pages = require('./imports/pages');
+
+
+//Set up for express
 var app = express();
 app.use(express.static(__dirname));
 app.use('js', express.static('views/js'));
@@ -49,159 +64,14 @@ app.use(session({
 app.set('stylesheets', express.static('views/stylesheets'));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-
-
-/**
- * PAGES SECTION
- */
-app.get('/', function(req, res){
-    if(req.session !== undefined && req.session.userName !== undefined)
-    {
-        res.render('pages/home');
-    }
-    else{
-        res.render('pages/login');
-    }
-});
-
-app.get('/chodes', function(req,res){
-    if(req.session !== undefined && req.session.userName !== undefined)
-    {
-        res.render('pages/chodes');
-    }
-    else{
-        res.render('pages/login');
-    }
-});
-
-app.get('/home', function(req,res){
-    if(req.session !== undefined && req.session.userName !== undefined)
-    {
-        res.render('pages/home');
-    }
-    else{
-        res.redirect('/');
-        res.send();
-    }
-    
-});
-
-app.get('/rikishi', function(req,res){
-    if(req.session !== undefined && req.session.userName !== undefined)
-    {
-        res.render('pages/rikishi');
-    }
-    else{
-        res.redirect('/');
-        res.send();
-    }
-});
-
-app.get('/logout', function(req,res){
-    req.session.destroy();
-    res.redirect('/');
-    res.send();
-});
-
-app.get('/leaderboard', function(req,res)
-{
-    if(req.session !== undefined && req.session.userName !== undefined)
-    {
-        res.render('pages/leaderboard');
-    }
-    else{
-        res.render('pages/login');
-    }
-});
-
-app.get('/myfavorites', function(req,res){
-    if(req.session !== undefined && req.session.userName !== undefined)
-    {
-        res.render('pages/mystable');
-    }
-    else{
-        res.redirect('/');
-        res.send();
-    }
-});
-
-app.get('/watch', function(req,res){
-    if(req.session !== undefined && req.session.userName !== undefined)
-    {
-        res.render('pages/watch');
-    }
-    else{
-        res.render('pages/login');
-    }
-});
-
-app.get('/rules', function(req,res)
-{
-    if(req.session !== undefined && req.session.userName !== undefined)
-    {
-        res.render('pages/rules');
-    }
-    else{
-        res.redirect('/');
-        res.send();
-    }
-});
-
-
-app.get('/roster', function(req,res){
-    if(req.session !== undefined && req.session.userName !== undefined)
-    {
-        res.render('pages/roster');
-    }
-    else{
-        res.render('pages/login');
-    }
-});
-
-app.get('/resetpassword', async function(req,res){
-    let resetValid = false;
-    db.one('select * from reset_requests where reset_id = $1', req.query.resetId)
-    .then(function(data){
-        let resetValid = validateResetRequest(data);
-        if(resetValid){
-            res.render('pages/reset');
-        }
-        else{
-            res.render('pages/invalidreset');
-        }
-    })
-    .catch(function(err){
-        res.render('pages/invalidreset');
-        return;
-    });
-});
-
-//Removed for now
-// app.get('/videogame', function(req,res){
-//     if(req.session !== undefined && req.session.userName !== undefined)
-//     {
-//         res.render('pages/videogame');
-//     }
-//     else{
-//         res.render('pages/login');
-//     }
-// });
-
-app.get('/theprophecy', function(req,res){
-    res.render('pages/wide');
-});
-
-
-
+app.use('/', pages);
 
 
 /**
- * API SECTION
- * 
- * 
- * 
+ * All of the site API is here
  */
+
+ //Login validation
 app.post('/login', function(req,res){
         var login = {
             "name":req.body.username,
@@ -230,6 +100,7 @@ app.post('/login', function(req,res){
         
 });
 
+//Submit roster for current basho
 app.post('/submitroster', function(req,res){
     // res.send('Rosters have been locked for the Nagoya Basho 2020. If you would still like to participate please contact the site administrator or e-mail GYOJI@WPCTS.COM');
     // return;
@@ -243,11 +114,12 @@ app.post('/submitroster', function(req,res){
         }
         else
         {
-            res.send('Successfully finalized your roster. You will now be eligible to win Fantasy Haru Basho 2020.');
+            res.send('Successfully finalized your roster.');
         }
     });
 
 });
+
 
 app.post('/winners', async function(req,res){
     var winners = req.body.winners;
@@ -263,6 +135,7 @@ app.post('/winners', async function(req,res){
     res.send('COMPLETE');
 })
 
+//Create new account
 app.post('/create', function(req,res){
     var user = {
         "name": req.body.username,
@@ -290,12 +163,13 @@ app.post('/create', function(req,res){
     });
 });
 
+//Get specific user's points
 app.get('/getpoints', async function(req,res){
     let result = await getPoints(req.session['userName']);
     res.send(result);
 });
 
-
+//Get results for specific basho
 app.post('/results', async function(req,res){
     let basho = req.body.tournament;
     if(basho != current_basho)
@@ -339,7 +213,6 @@ app.post('/results', async function(req,res){
 });
 
 //Gets up to date points for all users in current basho
-
 app.get('/currentbashorankings', function(req,res){
     db.task(async (t) => {
         let names = await t.any('SELECT user_name FROM user_info');
@@ -421,7 +294,7 @@ app.get('/currentbashorankings', function(req,res){
 
 
 
-
+//Remove rikishi from favorites
 app.post('/remove', function(req,res){
     // Use to lock\
     // var open = false;
@@ -450,10 +323,14 @@ app.post('/remove', function(req,res){
             });
     }
 });
+
+//Get roster for specific user
 app.get('/getroster', async function(req,res){
     let data = await db.any('select * from rikishi r inner join roster ro on ro.basho = $2 AND (r.ring_name = ANY (ro.active) OR r.ring_name = ro.substitute) where ro.user_name = $1', [req.session['userName'], current_basho]);
     res.send(data);
 });
+
+//Get all rikishi organized by rank tier
 app.get('/getrikishi', function(req,res){
     let data = {};
     db.any("select * from rikishi where rank like 'Maegashira%' AND active = true order by rank asc").then(function(response){
@@ -468,6 +345,7 @@ app.get('/getrikishi', function(req,res){
     }).catch(err => res.send("Issue fetching Maegashira: "+err));
 });
 
+//Get videos for specific basho
 app.post('/getbashovideos', function(req,res){
     var basho = req.body.tournament;
     db.any('select * from basho_video where basho = $1 order by day desc', basho).then(function(data){
@@ -476,12 +354,12 @@ app.post('/getbashovideos', function(req,res){
 });
 
 
-
+//Add sumo to your favorites
 app.post('/favorite', function(req,res){
     
     var favorite = {};
-    // Use to lock after Jan 12
-    // favorite.message = "Rosters are currently locked for the March Basho.";
+    // Uncomment to lock favorites
+    // favorite.message = "Rosters are currently locked for the ongoing tournament.";
     // favorite.success = false;
     // res.send(favorite);
     //Commented out after roster locks to prevent adding rikishi
@@ -554,6 +432,7 @@ app.post('/favorite', function(req,res){
     
 });
 
+//Get favorites for specific user
 app.get('/getmyfavorites', function(req,res){
 
     db.any('select * from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', req.session['userName'])
@@ -565,12 +444,14 @@ app.get('/getmyfavorites', function(req,res){
 
 });
 
+//Get ChodesTeam rikishi
 app.get('/getchodes', function(req,res){
     db.any('select distinct on (r.ring_name) r.*, SUM(bp.points) as points from rikishi r left join basho_points bp on (bp.ring_name = r.ring_name AND bp.basho = $1) where r.weight >= r.height and r.active = true GROUP BY r.ring_name, r.name', current_basho)
     .then(data => res.send(data))
     .catch(err => console.log("Issue fetching Chode data: "+err));
 });
 
+//Get data required for building points charts on rikishi page for all rikishi
 app.get('/charts', function(req,res){
     db.any('select SUM(points) as points, basho, ring_name from basho_points group by ring_name, basho order by basho, points desc')
     .then(function(data){
@@ -592,6 +473,7 @@ app.get('/charts', function(req,res){
     }).catch(err => console.log("Issue fetching charts:" +err));
 });
 
+//Update user password by matching given resetId to userId
 app.post('/changepassword', function(req,res){
     if(req.body.password.length < 6){
         res.send(false);
@@ -611,7 +493,6 @@ app.post('/changepassword', function(req,res){
                 console.log("Issue while retrieving user info for reset request: " + err);
                 res.send(false);
             });
-            
         }
         else{
             res.send(false);
@@ -624,6 +505,7 @@ app.post('/changepassword', function(req,res){
     
 });
 
+//Send reset password e-mail to given e-mail address if the e-mail is attached to a user account
 app.post('/emailresetrequest', function(req,res){
 
         let email = (req.body.email).toLowerCase();
@@ -688,113 +570,3 @@ app.post('/emailresetrequest', function(req,res){
 });
 
 app.listen(PORT, () => console.log('Listening on ' + PORT));
-
-
-
-
-
-/**
- * SUPPORT FUNCTION SECTION
- * 
- * 
- */
-function deleteResetRequest(resetId){
-    db.none("delete from reset_requests where reset_id = $1", resetId)
-    .catch(err => console.log("Could not delete reset id " + resetId + " error: " +err));
-}
-
-function deleteResetRequestsByEmail(email){
-    db.none("delete from reset_requests where email = $1", email)
-.catch(err => console.log("Could not delete reset request for email " + email + " error: " +err));
-}
-
-function changePassword(username, password){
-    bcrypt.hash(password, saltRounds, function(err, hash) {
-        if(err){
-            console.log("Issue hashing password for user: " + username + " Error:" + err);
-        }
-        else{
-            db.none("UPDATE user_info set password=$1 WHERE user_name=$2", [hash, username]).then(function(){
-            }).catch(function(err){
-                console.log("Error while updating password: " + err);
-            });
-        }
-    });
-}
-
-function validateResetRequest(resetRequest){
-    if(resetRequest.time_created === undefined){
-        return false;
-    }
-
-    let resetRequestedTime = new Date(resetRequest.time_created);
-    let currentTime = new Date();
-    if(currentTime.getTime() - resetRequestedTime.getTime() < 3600000 ){
-       return true;
-    }
-    else{
-        return false;
-    }
-}
-
-
-function addUser(userInfo){
-    bcrypt.hash(userInfo.password, saltRounds, function(err, hash) {
-        if(err)
-        {
-            console.log(err);
-        }
-        else
-        {
-            db.none('INSERT INTO user_info(user_name, password, email) VALUES($1, $2, $3)', [userInfo.name, hash, userInfo.email]).then(function(data){
-                
-            }).catch(err => {
-                console.log(err); 
-            });
-            db.none('INSERT INTO favorited(user_name) VALUES($1)', [userInfo.name]).then(function(data){
-                
-            }).catch(err => {
-                console.log(err);
-            });
-        }
-      });
-    
-}
-
-async function getPoints(userName)
-{
-    if(!userName)
-    {
-        return 'ERROR';
-    }
-    let result = await db.one('select * from roster where user_name = $1 AND basho = $2', [userName, current_basho]).catch(err => console.log('Error D1: '+err));
-    if(!result)
-    {
-        result = {failure:true};
-        return result;
-    }
-    if(result.substitute_day != null)
-    {
-        let before_injury = await db.one('select SUM(points) as points from basho_points bp WHERE bp.ring_name = ANY ($1) AND bp.basho=$2 AND bp.day < $3', [result.active, current_basho, result.substitute_day]);
-        if(before_injury.points == null)
-        {
-            before_injury.points = 0;
-        }
-        let subroster = result.active.filter(sumo => sumo != result.injured);
-        
-        subroster.push(result.substitute);
-        let after_injury = await db.one('select SUM(points) as points from basho_points bp WHERE bp.ring_name = ANY ($1) AND bp.basho=$2 AND bp.day >= $3', [subroster, current_basho, result.substitute_day]);
-        if(after_injury.points == null)
-        {
-            after_injury.points = 0;
-        }
-        result.totalpoints = {points:(parseInt(before_injury.points) + parseInt(after_injury.points))};
-        return result;
-    }
-    else
-    {
-        result.totalpoints = await db.one('select SUM(points) as points from basho_points bp WHERE bp.ring_name = ANY ($1) AND bp.basho=$2', [result.active, current_basho]);
-        
-        return result;
-    }
-}
