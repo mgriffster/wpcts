@@ -326,7 +326,8 @@ app.post('/remove', function(req,res){
 
 //Get roster for specific user
 app.get('/getroster', async function(req,res){
-    let data = await db.any('select * from rikishi r inner join roster ro on ro.basho = $2 AND (r.ring_name = ANY (ro.active) OR r.ring_name = ro.substitute) where ro.user_name = $1', [req.session['userName'], current_basho]);
+    let data = await db.any('select * from rikishi r inner join roster ro on ro.basho = $2 AND (r.ring_name = ANY (ro.active) OR r.ring_name = ro.substitute) where ro.user_name = $1', [req.session['userName'], current_basho])
+    .catch(err => console.log("No roster found"));
     res.send(data);
 });
 
@@ -366,7 +367,6 @@ app.post('/favorite', function(req,res){
     var currentSumo = [];
     
     var newSumo = req.body.sumoFavorite;
-
     if(yokozuna.includes(newSumo)){
         favorite.success = false;
         favorite.message = 'You can not add a Yokozuna to your stable because they have swords and that is not fair.';

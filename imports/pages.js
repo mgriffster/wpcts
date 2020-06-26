@@ -66,7 +66,7 @@ router.get('/leaderboard', function(req,res)
 router.get('/myfavorites', function(req,res){
     if(req.session !== undefined && req.session.userName !== undefined)
     {
-        res.render('pages/mystable');
+        res.render('pages/favorites');
     }
     else{
         res.redirect('/');
