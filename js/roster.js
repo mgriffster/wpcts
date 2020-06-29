@@ -1,6 +1,6 @@
 $(document).ready(function(){
     $.get('/getpoints', function(data){
-        if(!data.failure)
+        if(!data.failure && data.totalpoints.points != null)
         {
             document.getElementById('points').innerText = 'Your current points: ' + data.totalpoints.points;
         }
