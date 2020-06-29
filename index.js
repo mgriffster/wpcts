@@ -106,7 +106,10 @@ app.post('/submitroster', function(req,res){
     // return;
     var active = req.body.active;
     var sub = req.body.sub;
-
+    let index = active.indexOf(sub);
+    if(index > -1){
+        active.splice(index, 1);
+    }
     db.oneOrNone('insert into roster(user_name, active, substitute, basho) SELECT $1, $2, $3, $4 WHERE not exists (select * from roster where user_name = $1 AND basho = $4) RETURNING user_name', [req.session['userName'], active, sub, current_basho]).then(function(data){
         if(typeof data == 'undefined' || data == null)
         {
