@@ -146,24 +146,48 @@ app.post('/create', function(req,res){
         "email": (req.body.email).toLowerCase()
     }
 
-    db.any('SELECT * FROM user_info WHERE user_name = $1 OR email = $2', [user.name,user.email]).then(function(data){
-        if(data.length > 0)
-        {
+    if(user.email.length > 0)
+    {
+        db.any('SELECT * FROM user_info WHERE user_name = $1 OR email = $2', [user.name,user.email]).then(function(data){
+            if(data.length > 0)
+            {
+                user.success = false;
+                res.send(user);
+            }
+            else
+            {
+                addUser(user);
+                user.success = true;
+                req.session['userName'] = user.name;
+                res.send(user);
+            }
+        }).catch(function(err){
+            console.log("Could not create user account: " + err);
             user.success = false;
             res.send(user);
-        }
-        else
-        {
-            addUser(user);
-            user.success = true;
-            req.session['userName'] = user.name;
+        });
+    }
+    else{
+        db.any('SELECT * FROM user_info WHERE user_name = $1', [user.name]).then(function(data){
+            if(data.length > 0)
+            {
+                user.success = false;
+                res.send(user);
+            }
+            else
+            {
+                addUser(user);
+                user.success = true;
+                req.session['userName'] = user.name;
+                res.send(user);
+            }
+        }).catch(function(err){
+            console.log("Could not create user account: " + err);
+            user.success = false;
             res.send(user);
-        }
-    }).catch(function(err){
-        console.log("Could not create user account: " + err);
-        user.success = false;
-        res.send(user);
-    });
+        });
+    }
+    
 });
 
 //Get specific user's points
