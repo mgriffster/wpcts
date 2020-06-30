@@ -147,12 +147,10 @@ app.post('/create', function(req,res){
         "email": (req.body.email).toLowerCase()
     }
 
-    console.log(user);
 
     //Might change this later if we start requiring e-mails
     if(user.email.length > 0)
     {
-        console.log(user.email);
         db.any('SELECT * FROM user_info WHERE user_name = $1 OR email = $2', [user.name,user.email]).then(function(data){
             if(data.length > 0)
             {
@@ -173,7 +171,6 @@ app.post('/create', function(req,res){
         });
     }
     else{
-        console.log(user.name);
         db.any('SELECT * FROM user_info WHERE user_name = $1', [user.name]).then(function(data){
             if(data.length > 0)
             {
