@@ -103,8 +103,8 @@ app.post('/login', function(req,res){
 
 //Submit roster for current basho
 app.post('/submitroster', function(req,res){
-    // res.send('Rosters have been locked for the Nagoya Basho 2020. If you would still like to participate please contact the site administrator or e-mail GYOJI@WPCTS.COM');
-    // return;
+    res.send('Rosters have been locked for the Nagoya Basho 2020. If you would still like to participate please contact the site administrator or e-mail GYOJI@WPCTS.COM');
+    return;
     var active = req.body.active;
     var sub = req.body.sub;
     let index = active.indexOf(sub);
