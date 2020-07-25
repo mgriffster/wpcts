@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>WPCTS - My Favorites</title>
+    <title>WPCTS - My Stable</title>
 
     <!-- Lato Font -->
     <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
@@ -340,7 +340,7 @@ for (var attr in meta) {
   </head>
 <script src='/js/jquery.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-<script src='/js/favorites.js'></script>
+<script src='/js/mystable.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 <link href="/views/stylesheets/materialize.css" rel="stylesheet">
 <link href="/views/stylesheets/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
@@ -375,8 +375,8 @@ for (var attr in meta) {
     <!-- Navbar and Header -->
     <%- include header.ejs %>
         <div class="nav-header de white-text">
-          <h1>My Favorites</h1>
-          <h2></h2>
+          <h1>My Stable</h1>
+          <h3 id="pickNotice"></h3>
           
           <button id="submitShow" class="btn waves-light stable-button">SUBMIT ROSTER
             <i style="float:right" class="material-icons">people</i></button>

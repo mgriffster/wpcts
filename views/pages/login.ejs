@@ -1,41 +1,134 @@
-<html>
-<script src="/js/jquery.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-<script>
-    $(function() {
-        $(".header").load("/views/partials/header.html");
-    });
-</script>
-<div class="header"></div>
-<link rel="stylesheet" type="text/css" href="/views/stylesheets/login.css" />
-<div class="login-page">
-    <div class="form">
-        <form id="register-form">
-            <input id="newusername" type="text" placeholder="name" />
-            <input id="newpassword" type="password" placeholder="password" />
-            <input id="newemail" type="text" placeholder="email address" />
-            <button id="create">create</button>
-            <p class="message">Already registered? <a href="#" id="signin">Sign In</a></p>
-        </form>
-        <form id="login-form">
-            <input id="username" type="text" placeholder="username" />
-            <input id="password" type="password" placeholder="password" />
-            <div id="wrongEntry" style="color:red; display:none">INCORRECT USERNAME OR PASSWORD</div>
-            <button id="login">login</button>
-            <p class="message">Not registered? <a href="#" id="createAccount">Create an account</a></p>
-            <p class="message">Did you <a href="#" id="resetpassword">forget your password?</a></p>
-        </form>
-        <form id="reset-form">
-            <p class="white-text">Enter the e-mail connected to your account to reset your password.</p>
-            <input id ="resetemail" type="text" placeholder="e-mail">
-            <button id="reset">Reset Password</button>
-            <p class="message"><a href="#" id="backtosignin">Back to Login</a></p>
-        </form>
-    </div>
-</div>
-<div class="footer"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>When Push Comes To Shove</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/png" href="/views/teamMascots/Slappy.jpg"/>
+	<link rel="stylesheet" type="text/css" href="/views/vendor/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/views/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/views/fonts/iconic/css/material-design-iconic-font.min.css">
+	<link rel="stylesheet" type="text/css" href="/views/vendor/animate/animate.css">
+	<link rel="stylesheet" type="text/css" href="/views/vendor/css-hamburgers/hamburgers.min.css">
+	<link rel="stylesheet" type="text/css" href="/views/vendor/animsition/css/animsition.min.css">
+	<link rel="stylesheet" type="text/css" href="/views/vendor/select2/select2.min.css">
+	<link rel="stylesheet" type="text/css" href="/views/vendor/daterangepicker/daterangepicker.css">
+	<link rel="stylesheet" type="text/css" href="/views/stylesheets/loginutil.css">
+	<link rel="stylesheet" type="text/css" href="/views/stylesheets/newlogin.css">
+	
+</head>
+<body>
+	<script src="/js/jquery.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
-<script src="/js/login.js"></script>
-<script src="/js/materialize.js"></script>
+	<div class="limiter">
+		<div class="container-login100" style="background-image: url('/views/sumoImages/sumoarena.jpg');">
+			<div class="wrap-login100">
+				<form class="login100-form validate-form" id="login-form">
+					<span class="login100-form-title p-b-15" style="font-family:fantasy; font-weight:100; text-align:center;">
+						WPCTS Fantasy
+					</span>
 
+					<span class="login100-form-logo">
+						<img class="logo" src="/views/teamMascots/Slappy.jpg"></img>
+					</span>
+					
+					<span class="login100-form-title p-b-34 p-t-27">
+						Log in
+					</span>
+					
+					<div class="wrap-input100 validate-input" data-validate = "Enter username">
+						<input class="input100" type="text" id="username" placeholder="Username">
+						<span class="focus-input100" data-placeholder="&#xf207;"></span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate="Enter password">
+						<input class="input100" type="password" id="password" placeholder="Password">
+						<span class="focus-input100" data-placeholder="&#xf191;"></span>
+					</div>
+					<div id="wrongEntry" style="margin-bottom:5px; background-color:white; color:red; display:none">INCORRECT USERNAME OR PASSWORD</div>
+
+					<div class="container-login100-form-btn">
+						<button id="login" class="login100-form-btn">
+							Login
+						</button>
+					</div>
+
+					<div class="text-center p-t-90">
+						<p class="message"><a href="#" class="txt1" id="createAccount">Not registered? Create an account</a></p>
+						<p class="message"><a href="#" class="txt1" id="resetpassword">Did you forget your password?</a></p>
+					</div>
+				</form>
+				<form id="register-form">
+					<span class="login100-form-logo">
+						<img class="logo" src="/views/teamMascots/Slappy.jpg"></img>
+					</span>
+					<span class="login100-form-title p-b-34 p-t-27">
+						Create Account
+					</span>
+					
+					<div class="wrap-input100 validate-input" data-validate = "Enter username">
+						<input class="input100" type="text" id="newusername" placeholder="Username">
+						<span class="focus-input100" data-placeholder="&#xf207;"></span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate="Enter password">
+						<input class="input100" type="password" id="newpassword" placeholder="Password">
+						<span class="focus-input100" data-placeholder="&#xf191;"></span>
+					</div>
+					<div class="wrap-input100 validate-input" data-validate="Enter Email (optional)">
+						<input class="input100" type="text" id="newemail" placeholder="E-mail">
+						<span class="focus-input100" data-placeholder="&#xf191;"></span>
+					</div>
+					<div class="container-login100-form-btn">
+						<button id="create" class="login100-form-btn">
+							Create
+						</button>
+					</div>
+
+					<div class="text-center p-t-90">
+						<p class="message"><a href="#" class="txt1" id="signin"> Already registered? Sign in.</a></p>
+					</div>
+				</form>
+				<form id="reset-form">
+					
+					<span class="login100-form-logo">
+						<img class="logo" src="/views/teamMascots/Slappy.jpg"></img>
+					</span>
+					<span class="login100-form-title p-b-34 p-t-27">
+						Reset Password
+					</span>
+
+					<div class="wrap-input100 validate-input" data-validate="Enter the e-mail connect to your account">
+						<input class="input100" type="text" id="resetemail" placeholder="E-mail">
+						<span class="focus-input100" data-placeholder="&#xf191;"></span>
+					</div>
+					<div class="container-login100-form-btn">
+						<button id="reset" class="login100-form-btn">
+							Reset Password
+						</button>
+					</div>
+
+					<div class="text-center p-t-90">
+						<p class="message"><a href="#" class="txt1" id="backtosignin"> Back to Login</a></p>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+
+	<div id="dropDownSelect1"></div>
+	
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+	<script src="vendor/animsition/js/animsition.min.js"></script>
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script src="vendor/select2/select2.min.js"></script>
+	<script src="vendor/daterangepicker/moment.min.js"></script>
+	<script src="vendor/daterangepicker/daterangepicker.js"></script>
+	<script src="vendor/countdowntime/countdowntime.js"></script>
+	<script src="/js/newlogin.js"></script>
+
+</body>
 </html>

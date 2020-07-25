@@ -98,13 +98,12 @@ app.post('/login', function(req,res){
             res.send(login);
             });
         });
-        
 });
 
 //Submit roster for current basho
 app.post('/submitroster', function(req,res){
-    res.send('Rosters have been locked for the Nagoya Basho 2020. If you would still like to participate please contact the site administrator or e-mail GYOJI@WPCTS.COM');
-    return;
+    // res.send('Rosters have been locked for the Nagoya Basho 2020. If you would still like to participate please contact the site administrator or e-mail GYOJI@WPCTS.COM');
+    // return;
     var active = req.body.active;
     var sub = req.body.sub;
     let index = active.indexOf(sub);
@@ -326,9 +325,10 @@ app.get('/currentbashorankings', function(req,res){
 
 //Remove rikishi from favorites
 app.post('/remove', function(req,res){
-    // Use to lock\
-    // var open = false;
-    // res.send(open);
+    // Use to lock
+    var open = false;
+    res.send(open);
+    return
     //Commented out after roster locks to prevent removing rikishi
     var sumo = req.body.sumo;
     var name = req.session['userName'];
@@ -356,9 +356,26 @@ app.post('/remove', function(req,res){
 
 //Get roster for specific user
 app.get('/getroster', async function(req,res){
-    let data = await db.any('select * from rikishi r inner join roster ro on ro.basho = $2 AND (r.ring_name = ANY (ro.active) OR r.ring_name = ro.substitute) where ro.user_name = $1', [req.session['userName'], current_basho])
-    .catch(err => console.log("No roster found"));
-    res.send(data);
+    let rosterSubmitted = await db.oneOrNone('select count(*) from roster where user_name = $1 AND basho = $2', [req.session['userName'], current_basho]);
+    if(rosterSubmitted.count != 0){
+        db.any('select * from rikishi r inner join roster ro on ro.basho = $2 AND (r.ring_name = ANY (ro.active) OR r.ring_name = ro.substitute) where ro.user_name = $1', [req.session['userName'], current_basho])
+        .then(function(data){
+            data[0].submitted = true;
+            res.send(data);
+        })
+        .catch(err => console.log("No roster found: " + err));
+    }
+    else{
+        db.any('select * from rikishi r inner join favorited f on r.ring_name = ANY (f.sumo) where f.user_name = $1', req.session['userName'])
+        .then(function(data){
+            data[0].submitted = false;
+            res.send(data);
+        })
+        .catch(err=>{
+        console.log("Issue fetching favorites for user:" +req.session['userName']+" Error:"+ err);});
+        
+    }
+    
 });
 
 //Get all rikishi organized by rank tier
@@ -390,9 +407,9 @@ app.post('/favorite', function(req,res){
     
     var favorite = {};
     // Uncomment to lock favorites
-    // favorite.message = "Rosters are currently locked for the ongoing tournament.";
-    // favorite.success = false;
-    // res.send(favorite);
+    favorite.message = "Rosters are currently locked for the ongoing tournament.";
+    favorite.success = false;
+    res.send(favorite);
     //Commented out after roster locks to prevent adding rikishi
     var currentSumo = [];
     

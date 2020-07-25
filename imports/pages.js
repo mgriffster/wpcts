@@ -52,6 +52,10 @@ router.get('/logout', function(req,res){
     res.send();
 });
 
+router.get('/oldlogin', function(req,res){
+    res.render('pages/oldlogin');
+});
+
 router.get('/leaderboard', function(req,res)
 {
     if(req.session !== undefined && req.session.userName !== undefined)
@@ -63,10 +67,10 @@ router.get('/leaderboard', function(req,res)
     }
 });
 
-router.get('/myfavorites', function(req,res){
+router.get('/mystable', function(req,res){
     if(req.session !== undefined && req.session.userName !== undefined)
     {
-        res.render('pages/favorites');
+        res.render('pages/mystable');
     }
     else{
         res.redirect('/');
@@ -96,16 +100,16 @@ router.get('/rules', function(req,res)
     }
 });
 
-
-router.get('/roster', function(req,res){
-    if(req.session !== undefined && req.session.userName !== undefined)
-    {
-        res.render('pages/roster');
-    }
-    else{
-        res.render('pages/login');
-    }
-});
+//Deprecated, removing code soon
+// router.get('/roster', function(req,res){
+//     if(req.session !== undefined && req.session.userName !== undefined)
+//     {
+//         res.render('pages/roster');
+//     }
+//     else{
+//         res.render('pages/login');
+//     }
+// });
 
 router.get('/resetpassword', async function(req,res){
     let resetValid = false;
