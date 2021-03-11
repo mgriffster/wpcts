@@ -33,7 +33,7 @@ const sanyaku = ['Takakeisho', 'Terunofuji', 'Asanoyama', 'Mitakeumi', 'Takanosh
 const yokozuna = ['Hakuho', 'Kakuryu'];
 
 //Make sure to export results to fantasy_results table before changing current basho (will break leaderboard otherwise)
-const current_basho = 'Nagoya20';
+const current_basho = 'Haru20';
 
 module.exports = function(){
     this.current_basho = current_basho;
@@ -407,9 +407,9 @@ app.post('/favorite', function(req,res){
     
     var favorite = {};
     // Uncomment to lock favorites
-    favorite.message = "Rosters are currently locked for the ongoing tournament.";
-    favorite.success = false;
-    res.send(favorite);
+    // favorite.message = "Rosters are currently locked for the ongoing tournament.";
+    // favorite.success = false;
+    // res.send(favorite);
     //Commented out after roster locks to prevent adding rikishi
     var currentSumo = [];
     
