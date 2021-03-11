@@ -26,10 +26,10 @@ Make sure points are grabbed from correct basho for the export
 */
 
 //this is the list of bashos for which we have data, not used for anything yet but to remind me
-const basho_list = ['Nagoya20','Haru20', 'Hatsu20', 'Kyushu19', 'Aki19'];
+const basho_list = ['Haru20','Nagoya20','Haru20', 'Hatsu20', 'Kyushu19', 'Aki19'];
 
 //Current high ranked rikishi
-const sanyaku = ['Takakeisho', 'Daieisho', 'Asanoyama', 'Mitakeumi', 'Okinoumi','Shodai'];
+const sanyaku = ['Takakeisho', 'Terunofuji', 'Asanoyama', 'Mitakeumi', 'Takanosho','Shodai', 'Takayasu', 'Daieisho'];
 const yokozuna = ['Hakuho', 'Kakuryu'];
 
 //Make sure to export results to fantasy_results table before changing current basho (will break leaderboard otherwise)
@@ -288,7 +288,7 @@ app.get('/currentbashorankings', function(req,res){
 
 
 //Export results code for end of basho
-// app.get('/exportHaru20', async function(req,res)
+// app.get('/exportNagoya20', async function(req,res)
 // {
 //     let user_rosters = await db.any('select * from roster where basho = $1', current_basho);
 //     let data = [];
@@ -325,10 +325,10 @@ app.get('/currentbashorankings', function(req,res){
 
 //Remove rikishi from favorites
 app.post('/remove', function(req,res){
-    // Use to lock
-    var open = false;
-    res.send(open);
-    return
+    // // Use to lock
+    // var open = false;
+    // res.send(open);
+    // return
     //Commented out after roster locks to prevent removing rikishi
     var sumo = req.body.sumo;
     var name = req.session['userName'];
